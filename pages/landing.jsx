@@ -17,7 +17,7 @@ import { useUser } from "@clerk/nextjs";
 export default function Landing() {
   const [events, setEvents] = useState([]);
    const { user } = useUser();
-   console.log(user);
+   console.log(`Hello ${data.taget_date}`);
    
   
 useEffect(() => {
