@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:jest": "jest"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.31.4",
@@ -25,10 +26,16 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "autoprefixer": "^10.4.13",
     "eslint": "8.33.0",
     "eslint-config-next": "^15.5.0",
-    "jest": "^29.6.2",
+    "jest": "^30.1.1",
+    "jest-environment-jsdom": "^30.1.1",
+    "next-router-mock": "^1.0.2",
     "postcss": "^8.4.21",
     "supertest": "^6.3.3",
     "tailwindcss": "^3.2.4"
