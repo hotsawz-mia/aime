@@ -5,7 +5,8 @@ export default function Hello() {
     
     const response = await fetch("http://localhost:3000/api/generateposts");
     console.log("response", response)
-    // const data = await response.json();
+    const data = await response.json();
+    console.log(data);
     }
     return (
     <button onClick={handleClick}> Generate </button>
