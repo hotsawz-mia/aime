@@ -38,6 +38,7 @@ const Results = () => {
         userId: "xyz789",
         startDate: "2025-08-28", // YYYY-MM-DD - this would have to come from the DB and be a variable that sets to when the user enters "confirm"
         dailyByMonth: {
+          // by month, daily schedule for every week of that month, daily schedule changes from month 1 -6 
           "1": [
             { step: "Warm-up", time: "5 min", content: "Lip trills, sirens, humming, gentle scales. Focus on breath support and relaxation." },
             { step: "Technique", time: "10 min", content: "Exercises for vocal range, breath control, resonance, and pitch accuracy." },
@@ -97,7 +98,7 @@ const Results = () => {
       //const now = new Date(); // ✅ THESE TWO LINES OF CODE ARE FOR THE REAL FINAL CODE THAT DOESNT USE MOCKING
 
       // future date simulated in these next two lines of code - to shown that the frontend is dynamic - dev tool, not to be included in final code!!!!!!!!
-      const simulateDate = new Date("2025-10-15"); // 👈 pick any date you want
+      const simulateDate = new Date("2025-10-16"); // 👈 pick any date you want at it will render a different schedule on the page
       const now = simulateDate;
       // end simulation
       const diffDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
@@ -129,17 +130,36 @@ const Results = () => {
         {currentDayIndex + 1}
       </p>
 
-      {/* Daily Schedule per Month */}
+      {/* Daily Schedule Section */}
       <Accordion title="Daily Schedule" openDefault={true}>
-        <p style={{ fontWeight: "bold" }}>
-          Total Months in Plan: {Object.keys(results.dailyByMonth).length}
-        </p>
-
         {Object.entries(results.dailyByMonth).map(([month, steps]) => {
           const isCurrent = parseInt(month) === currentMonth;
 
           if (isCurrent) {
-            // Always show current month fully expanded
+            let dailyContent;
+
+            if (currentDayIndex < 5) {
+              // Day 1–5 → show normal daily routine
+              dailyContent = steps.map((item, i) => (
+                <div key={i} style={{ marginBottom: "10px" }}>
+                  <h3 style={{ fontSize: "18px", margin: "4px 0" }}>
+                    {item.step} ({item.time})
+                  </h3>
+                  <p style={{ margin: 0 }}>{item.content}</p>
+                </div>
+              ));
+            } else if (currentDayIndex === 5) {
+              // Day 6 → weekly performance day
+              dailyContent = (
+                <p style={{ fontSize: "16px" }}>{results.weekly[1].content}</p>
+              );
+            } else {
+              // Day 7 → weekly rest/reflection day
+              dailyContent = (
+                <p style={{ fontSize: "16px" }}>{results.weekly[2].content}</p>
+              );
+            }
+
             return (
               <div
                 key={month}
@@ -147,27 +167,18 @@ const Results = () => {
                   marginBottom: "20px",
                   padding: "10px",
                   borderRadius: "6px",
-                  background: "#8ea2eb87"
+                  background: "#2dbff087"
                 }}
               >
                 <h2 style={{ fontSize: "22px", margin: "10px 0" }}>
-                  {parseInt(month) === currentMonth
-                    ? `Day ${currentDayIndex + 1} of Week ${currentWeek} (Current Month ~ ${month})`
-                    : `Month ${month}`}
+                  Day {currentDayIndex + 1} of Week {currentWeek} (Month {month} - Current)
                 </h2>
-                {steps.map((item, i) => (
-                  <div key={i} style={{ marginBottom: "10px" }}>
-                    <h3 style={{ fontSize: "18px", margin: "4px 0" }}>
-                      {item.step} ({item.time})
-                    </h3>
-                    <p style={{ margin: 0 }}>{item.content}</p>
-                  </div>
-                ))}
+                {dailyContent}
               </div>
             );
           }
 
-          // Other months go into their own accordions
+          // Non-current months stay collapsed
           return (
             <Accordion key={month} title={`Month ${month}`}>
               {steps.map((item, i) => (
@@ -182,6 +193,7 @@ const Results = () => {
           );
         })}
       </Accordion>
+
 
       {/* Weekly Schedule that can be expanded */}
       <Accordion title="Weekly Schedule">
@@ -199,7 +211,7 @@ const Results = () => {
                         marginBottom: "10px",
                         padding: "10px",
                         borderRadius: "6px",
-                        background: isCurrent ? "#58c8ed91" : "transparent"
+                        background: isCurrent ? "#ce74f164" : "transparent"
                       }}
                     >
                       <h3 style={{ fontSize: "18px", margin: "4px 0" }}>
@@ -245,7 +257,7 @@ const Results = () => {
                 marginBottom: "10px",
                 padding: "10px",
                 borderRadius: "6px",
-                background: isCurrent ? "#cf88d17f" : "transparent"
+                background: isCurrent ? "#3d3ad47f" : "transparent"
               }}
             >
               <h3 style={{ fontSize: "18px", margin: "4px 0" }}>
