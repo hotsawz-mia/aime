@@ -1,6 +1,9 @@
 // can add protected routes here as well
 
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+  // console.log("in middleware");
+
+
 
 // use the format below to create routes that are public and don't require authentication
 // currently this is set up so that users will be redirected to login sugn-up if they are not registered
@@ -8,6 +11,8 @@ const isPublicRoute = createRouteMatcher([
     "/",
     "/login(.*)",
     "register(.*)",
+    "/register(.*)",
+    "/hello(.*)",
     "/api/dbtest",
 ])
 
