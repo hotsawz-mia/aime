@@ -44,11 +44,11 @@ export default function AimePlannerForm() {
     setErrors({});
     setSubmitting(true);
     try {
-      const res = await fetch("/api/goals", {
+      const res = await fetch("/api/getplan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ aime, success, startLevel, targetDate, timePerDay }),
+        body: JSON.stringify({ aim: aime, success, startingLevel: startLevel, targetDate, timePerDay }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const { id } = await res.json();
