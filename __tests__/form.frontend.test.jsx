@@ -1,5 +1,8 @@
 import React from "react";
-import { render, screen, fireEvent, within} from "@testing-library/react";
+import { render, screen, fireEvent, within, waitFor } from "@testing-library/react";
+import * as nextRouter from "next/router";
+import AimePlannerForm from "../pages/form.jsx";
+
 
 jest.mock("next/router", () => ({
   useRouter: () => ({ push: jest.fn() }),
@@ -14,7 +17,6 @@ test("renders", () => {
   expect(screen.getByText(/hello/i)).toBeInTheDocument();
 });
 
-import AimePlannerForm from "../pages/form";
 
 test("renders all form fields", () => {
   render(<AimePlannerForm />);
@@ -62,3 +64,24 @@ test("rejects past dates", () => {
   fireEvent.click(screen.getByRole("button", { name: /plan my goal/i }));
   expect(screen.getByText(/Please pick a date in the future/i)).toBeInTheDocument();
 });
+
+// past-date validation
+test("shows future-date error", () => {
+  render(<AimePlannerForm />);
+  fireEvent.change(screen.getByLabelText(/aime/i), { target: { value: "G" } });
+  fireEvent.change(screen.getByLabelText(/success/i), { target: { value: "S" } });
+  fireEvent.change(screen.getByLabelText(/level/i), { target: { value: "L" } });
+  fireEvent.change(screen.getByLabelText(/achieved this goal/i), { target: { value: "2000-01-01" },});
+  fireEvent.change(screen.getByLabelText(/how much time per day/i), { target: { value: "10" },});
+  fireEvent.click(screen.getByRole("button", { name: /plan my goal/i }));
+  expect(screen.getByText(/please pick a date in the future\./i)).toBeInTheDocument();
+});
+
+// timePerDay bounds
+// test("rejects timePerDay outside 1–60", () => {
+//   render(<AimePlannerForm />);
+//   fireEvent.change(screen.getByLabelText(/how much time per day/i), { target: { value: "0" } });
+//   fireEvent.click(screen.getByRole("button", { name: /plan my goal/i }));
+//   const timeGroup = screen.getByLabelText(/how much time per day/i).closest(".form-control");
+//   expect(within(timeGroup).getByText(/between 1 and 60/i)).toBeInTheDocument();
+// });
