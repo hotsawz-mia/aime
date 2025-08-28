@@ -1,10 +1,8 @@
-// export default {
-//   testEnvironment: "node",
-//   transform: {}, // no Babel
-//   moduleFileExtensions: ["js", "jsx", "mjs", "cjs", "json"],
-// };
-
 export default {
-    testEnvironment: "node",
-    transform: {},
-  };
+  testEnvironment: "jsdom",
+  transform: {
+    "^.+\\.[jt]sx?$": ["babel-jest", { presets: ["next/babel"] }],
+  },
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  testPathIgnorePatterns: ["/node_modules/", "/.next/"],
+};
