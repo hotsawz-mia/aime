@@ -10,9 +10,38 @@ export default function AimePlannerForm() {
   const [targetDate, setTargetDate] = useState(""); // yyyy-mm-dd
   const [timePerDay, setTimePerDay] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // validate ALL fields before early return
+    const newErrors = {};
+    if (!aime.trim()) newErrors.aime = "This field is required.";
+    if (!success.trim()) newErrors.success = "This field is required.";
+    if (!startLevel.trim()) newErrors.startLevel = "This field is required.";
+    if (!targetDate.trim()) {
+      newErrors.targetDate = "This field is required.";
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // strip time
+      const picked = new Date(targetDate);
+      if (isNaN(picked.getTime()) || picked <= today) {
+        newErrors.targetDate = "Please pick a date in the future.";
+      }
+    }
+
+    const timePerDayNum = Number(timePerDay);
+    if (!timePerDay || isNaN(timePerDayNum) || timePerDayNum < 1 || timePerDayNum > 60) {
+      newErrors.timePerDay = "Please enter a number between 1 and 60.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
     setSubmitting(true);
     try {
       const res = await fetch("/api/goals", {
@@ -47,9 +76,13 @@ export default function AimePlannerForm() {
               className="input input-bordered w-full text-2xl"
               placeholder="Sing in a Rock Band"
               value={aime}
-              onChange={(e) => setAime(e.target.value)}
+              onChange={(e) => {
+                setAime(e.target.value);
+                if (errors.aime) setErrors((p) => ({ ...p, aime: undefined }));
+              }}
               autoComplete="off"
             />
+            {errors.aime && <p className="text-error text-sm mt-1">{errors.aime}</p>}
           </div>
 
           {/* What does success look like for you? */}
@@ -63,8 +96,12 @@ export default function AimePlannerForm() {
               placeholder="Perform in a small music venue with a band"
               rows={3}
               value={success}
-              onChange={(e) => setSuccess(e.target.value)}
+              onChange={(e) => {
+                setSuccess(e.target.value);
+                if (errors.success) setErrors((p) => ({ ...p, success: undefined }));
+              }}
             />
+            {errors.success && <p className="text-error text-sm mt-1">{errors.success}</p>}
           </div>
 
           {/* Starting Level */}
@@ -78,12 +115,16 @@ export default function AimePlannerForm() {
               className="input input-bordered w-full text-2xl"
               placeholder="I sing in the shower"
               value={startLevel}
-              onChange={(e) => setStartLevel(e.target.value)}
+              onChange={(e) => {
+                setStartLevel(e.target.value);
+                if (errors.startLevel) setErrors((p) => ({ ...p, startLevel: undefined }));
+              }}
               autoComplete="off"
             />
+            {errors.startLevel && <p className="text-error text-sm mt-1">{errors.startLevel}</p>}
           </div>
 
-         {/* Target Date */}
+          {/* Target Date */}
           <div className="form-control">
             <label htmlFor="targetDate" className="label">
               <span className="label-text text-2xl">When do you want to have achieved this goal by?</span>
@@ -93,8 +134,12 @@ export default function AimePlannerForm() {
               type="date"
               className="input input-bordered w-full text-2xl text-base-content appearance-none"
               value={targetDate}
-              onChange={(e) => setTargetDate(e.target.value)}
+              onChange={(e) => {
+                setTargetDate(e.target.value);
+                if (errors.targetDate) setErrors((p) => ({ ...p, targetDate: undefined }));
+              }}
             />
+            {errors.targetDate && <p className="text-error text-sm mt-1">{errors.targetDate}</p>}
           </div>
 
           {/* Time Per Day */}
@@ -102,7 +147,9 @@ export default function AimePlannerForm() {
             <label htmlFor="timePerDay" className="label">
               <span className="label-text text-2xl">How much time per day can you realistically commit?</span>
             </label>
-            <p className="mt-1 text-sm opacity-70">If in doubt, think small. Most people think they can commit more time than they actually can.</p>
+            <p className="mt-1 text-sm opacity-70">
+              If in doubt, think small. Most people think they can commit more time than they actually can.
+            </p>
             <input
               id="timePerDay"
               type="number"
@@ -112,9 +159,13 @@ export default function AimePlannerForm() {
               className="input input-bordered w-full text-2xl"
               placeholder="minutes (1–60)"
               value={timePerDay}
-              onChange={(e) => setTimePerDay(e.target.value)}
+              onChange={(e) => {
+                setTimePerDay(e.target.value);
+                if (errors.timePerDay) setErrors((p) => ({ ...p, timePerDay: undefined }));
+              }}
               inputMode="numeric"
             />
+            {errors.timePerDay && <p className="text-error text-sm mt-1">{errors.timePerDay}</p>}
           </div>
 
           <div className="flex justify-end pt-2">
@@ -127,10 +178,6 @@ export default function AimePlannerForm() {
             </button>
           </div>
         </form>
-        {/* <button className="btn btn-primary">Daisy OK?</button>
-        <span className="badge badge-secondary">Badge</span>
-        <div className="p-8 bg-red-500 text-white">TW OK?</div>
-        <div className="h-[123px] w-[123px] bg-blue-500">123px</div> */}
       </main>
     </div>
   );

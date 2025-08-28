@@ -9,10 +9,10 @@ export default async function handler(req, res) {
 
   try {
     const { aime, success, startLevel, targetDate, timePerDay } = req.body || {};
-    if (!aime || !success || !targetDate) {
+    if (!aime || !success || !startLevel || !targetDate || !timePerDay) {
       return res
         .status(400)
-        .json({ error: "Missing required fields: aime, success, targetDate" });
+        .json({ error: "Missing required fields: aime, success, startLevel, targetDate, timePerDay" });
     }
 
     const hasKey = !!process.env.OPENAI_API_KEY;
