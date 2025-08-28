@@ -1,60 +1,40 @@
-// this works if you want to check its connection with OpenAI
-
-// import { OpenAIApi, Configuration} from "openai";
-
-// export default async function handler(req, res) {
-//     const config = new Configuration({
-//         apiKey: process.env.OPENAI_API_KEY,
-//     });
-
-//     const openai = new OpenAIApi(config);
-
-//     const goal = "Sing in a rock band";
-//     const keywords= "first-time singer, rock band, music venue";
-
-//     const response = await openai.createChatCompletion({
-//         model: "gpt-4.1",
-//         messages:[{
-//             role: "system", //where the message comes from
-//             content: "Welcome to Aime. Designed to help you succeed"
-//         },
-//         {
-//             role:"user", // this is the users prompt
-//             content: `"Generate me 6 month weekly plan on the following Aim: ${goal}"`
-//         } ],
-//     });
-
-//     const content = response.data.choices[0]?.message?.content;
-//     res.status(200).json({ content });
-// }
-
-
-// this works but will not return any data as there is no form connected yet
-import { OpenAIApi, Configuration } from "openai";
+// Receives POST data from a frontend form.
+// Uses form data to generate a prompt for OpenAI.
+// Parses the OpenAI response as JSON.
+// Saves the plan and Clerk user ID to MongoDB.
+// Returns the new plan’s ID to the frontend.
+import clientPromise from "../../lib/mongodb";
+import { getAuth } from "@clerk/nextjs/server";
+import { Configuration, OpenAIApi } from "openai";
 
 export default async function handler(req, res) {
+    if (req.method === "POST") {
     const config = new Configuration({
         apiKey: process.env.OPENAI_API_KEY,
     });
 
     const openai = new OpenAIApi(config);
+    const client = await clientPromise;
+    const db = client.db("aime");
+    const plans = db.collection("plans");
+    const { userId } = getAuth(req);
 
     // grab form data from request body - based on Client form
-    // const {
-    //     aim,
-    //     success,
-    //     startingLevel,
-    //     targetDate,
-    //     timePerDay
-    // } = req.body;
+    const {
+        aim,
+        success,
+        startingLevel,
+        targetDate,
+        timePerDay
+    } = req.body;
 
     // hardcoded for testing
 
-    const aim = "Sing in a rock band";
-    const success = "Perform at a local venue confidently";
-    const startingLevel = "Beginner with no stage experience";
-    const targetDate = "2025-12-31";
-    const timePerDay = "1 hour";
+    // const aim = "Sing in a rock band";
+    // const success = "Perform at a local venue confidently";
+    // const startingLevel = "Beginner with no stage experience";
+    // const targetDate = "2025-12-31";
+    // const timePerDay = "1 hour";
 
     const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
@@ -83,18 +63,34 @@ Make sure the JSON is valid and parseable.
             }
         ],
     });
-
     const content = response.data.choices[0]?.message?.content;
 
-    // try parsing AI response as JSON
+    // Remove code block markers if present
+let cleanedContent = content
+  .replace(/```json/g, "")
+  .replace(/```/g, "")
+  .trim();
+    // Try to parse the response as JSON
     let plan;
     try {
-        plan = JSON.parse(content);
-    } catch (error) {
-        // fallback in case AI doesn't return valid JSON
-        plan = { error: "Failed to parse AI response as JSON", raw: content };
+      plan = JSON.parse(cleanedContent);
+    } catch (e) {
+      return res.status(500).json({ error: "OpenAI did not return valid JSON", content });
     }
 
-    res.status(200).json({ plan });
+    // Insert the plan into MongoDB
+    const result = await plans.insertOne({
+      plan,
+      createdAt: new Date(),
+    //   coming from Clerk server side
+      userId
+    });
+
+
+    res.status(200).json({ id: result.insertedId });
+  } else {
+    res.status(405).json({ message: "Method not allowed" });
+
+  }
 }
 
