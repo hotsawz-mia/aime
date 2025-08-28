@@ -42,52 +42,52 @@ const Results = () => {
           "1": [
             { step: "Warm-up", time: "5 min", content: "Lip trills, sirens, humming, gentle scales. Focus on breath support and relaxation." },
             { step: "Technique", time: "10 min", content: "Exercises for vocal range, breath control, resonance, and pitch accuracy." },
-            { step: "Song Practice", time: "10 min", content: "Learn and rehearse 2–3 rock songs line by line, focusing on pitch, phrasing, and emotional delivery." },
+            { step: "Song Practice", time: "10 min", content: "Learn and rehearse 2-3 rock songs line by line, focusing on pitch, phrasing, and emotional delivery." },
             { step: "Cooldown", time: "5 min", content: "Gentle humming or descending scales to relax vocal cords." }
           ],
           "2": [
             { step: "Warm-up", time: "5 min", content: "Extend warmups slightly for range expansion." },
             { step: "Technique", time: "10 min", content: "Introduce controlled grit/distortion, stamina building." },
-            { step: "Song Practice", time: "10 min", content: "Work on building a setlist of 4–5 songs, sing with karaoke/instrumental tracks." },
+            { step: "Song Practice", time: "10 min", content: "Work on building a setlist of 4-5 songs, sing with karaoke/instrumental tracks." },
             { step: "Cooldown", time: "5 min", content: "Release tension from grit with gentle humming/scales." }
           ],
           "3": [
             { step: "Warm-up", time: "5 min", content: "Full range sirens, build stamina with breath control." },
             { step: "Technique", time: "10 min", content: "Work on sustaining notes, practice endurance with grit." },
-            { step: "Song Practice", time: "10 min", content: "Perform full songs start-to-finish, aiming for a 6–7 song setlist." },
+            { step: "Song Practice", time: "10 min", content: "Perform full songs start-to-finish, aiming for a 6-7 song setlist." },
             { step: "Cooldown", time: "5 min", content: "Gentle humming and scales to release tension." }
           ],
           "4": [
             { step: "Warm-up", time: "5 min", content: "Pre-band style warmup: quick but effective." },
             { step: "Technique", time: "10 min", content: "Work with dynamics (soft/loud, clean/gritty)." },
-            { step: "Song Practice", time: "10 min", content: "Rehearse 7–8 songs in setlist order, simulate live transitions." },
+            { step: "Song Practice", time: "10 min", content: "Rehearse 7-8 songs in setlist order, simulate live transitions." },
             { step: "Cooldown", time: "5 min", content: "Recovery cooldown after extended practice." }
           ],
           "5": [
             { step: "Warm-up", time: "5 min", content: "Fast, efficient warmup (gig-prep style)." },
             { step: "Technique", time: "10 min", content: "Maintain control, light exercises only." },
-            { step: "Song Practice", time: "10 min", content: "Run entire setlist 2–3x per week, focus on stamina and stage interaction." },
+            { step: "Song Practice", time: "10 min", content: "Run entire setlist 2-3x per week, focus on stamina and stage interaction." },
             { step: "Cooldown", time: "5 min", content: "Strict cooldown and vocal recovery after long sessions." }
           ],
           "6": [
-            { step: "Warm-up", time: "5 min", content: "Exact warmup you’ll use before the show." },
-            { step: "Technique", time: "10 min", content: "Minimal – maintenance only, keep voice fresh." },
+            { step: "Warm-up", time: "5 min", content: "Exact warmup you will use before the show." },
+            { step: "Technique", time: "10 min", content: "Minimal - maintenance only, keep voice fresh." },
             { step: "Song Practice", time: "10 min", content: "Simulate full live performance including crowd talk and movement." },
             { step: "Cooldown", time: "5 min", content: "Always cool down after rehearsals/gig to prevent fatigue." }
           ]
         },
         weekly: [
-          { day: "Day 1–5", content: "Follow daily routine." },
-          { day: "Day 6", content: "Creative/performance practice – sing full songs as if on stage, record yourself to review." },
-          { day: "Day 7", content: "Reflection/rest – light humming or skip singing, listen to live performances, take notes." }
+          { day: "Day 1-5", content: "Follow daily routine." },
+          { day: "Day 6", content: "Creative/performance practice - sing full songs as if on stage, record yourself to review." },
+          { day: "Day 7", content: "Reflection/rest - light humming or skip singing, listen to live performances, take notes." }
         ],
         monthly: [
-          { month: "Month 1", content: "Foundations – build consistent routine, identify vocal range, learn 2–3 songs, record weekly." },
-          { month: "Month 2", content: "Expanding skills – add grit, stamina exercises, 4–5 song setlist, karaoke versions, basic mic technique." },
-          { month: "Month 3", content: "Confidence & repertoire – perform full songs, expand to 6–7 songs, focus on performance energy, start networking." },
-          { month: "Month 4", content: "Band readiness – rehearse with backing tracks, build 7–8 song setlist, learn stage cues and endurance." },
-          { month: "Month 5", content: "Rehearsal & live prep – rehearse with band (or simulate), practice crowd interaction, sing full setlist 2–3x weekly, confirm venue." },
-          { month: "Month 6", content: "Performance mode – rehearse regularly, refine stage presence, perform mock concert, finish with first live gig." }
+          { month: "Month 1", content: "Foundations - build consistent routine, identify vocal range, learn 2-3 songs, record weekly." },
+          { month: "Month 2", content: "Expanding skills - add grit, stamina exercises, 4-5 song setlist, karaoke versions, basic mic technique." },
+          { month: "Month 3", content: "Confidence & repertoire - perform full songs, expand to 6-7 songs, focus on performance energy, start networking." },
+          { month: "Month 4", content: "Band readiness - rehearse with backing tracks, build 7-8 song setlist, learn stage cues and endurance." },
+          { month: "Month 5", content: "Rehearsal & live prep - rehearse with band (or simulate), practice crowd interaction, sing full setlist 2-3x weekly, confirm venue." },
+          { month: "Month 6", content: "Performance mode - rehearse regularly, refine stage presence, perform mock concert, finish with first live gig." }
         ]
       };
 
