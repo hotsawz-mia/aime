@@ -39,17 +39,25 @@ export default async function handler(req, res) {
 
     const openai = new OpenAIApi(config);
 
-    // grab form data from request body
-    const {
-        aim,
-        success,
-        startingLevel,
-        targetDate,
-        timePerDay
-    } = req.body;
+    // grab form data from request body - based on Client form
+    // const {
+    //     aim,
+    //     success,
+    //     startingLevel,
+    //     targetDate,
+    //     timePerDay
+    // } = req.body;
+
+    // hardcoded for testing
+
+    const aim = "Sing in a rock band";
+    const success = "Perform at a local venue confidently";
+    const startingLevel = "Beginner with no stage experience";
+    const targetDate = "2025-12-31";
+    const timePerDay = "1 hour";
 
     const response = await openai.createChatCompletion({
-        model: "gpt-4.1",
+        model: "gpt-3.5-turbo",
         messages: [
             {
                 role: "system",
