@@ -118,11 +118,16 @@ export default function ResultsPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-    const { id } = router.query;
-    if (!id) return;
+    // this should pull the id from the params after the redirect
+    // below is a work-a-around
+    // const { id } = router.query;
+    // if (!id) return;
+    const id = "68b0e0e75fd2ad1fcc9d9aee"
 
     const res = await fetch(`/api/getresult?id=${id}`);
     const data = await res.json();
+    console.log("data", data);
+    
       // ---- Replace this "incoming" with the real backend response ----
       // const incoming = {
       //   plan: {
@@ -196,9 +201,12 @@ export default function ResultsPage() {
       // };
 
       // ---- Normalize → your UI shape ----
-      const lp = results?.plan?.learning_plan || {};
-      const startDate = lp.start_date || new Date().toISOString().slice(0, 10); // USE BACKEND'S DATE
-      const minutesPerDay = parseMinutesFromTimeString(lp.time_available_per_day);
+      const lp = data?.plan?.learningPlan || {};
+      const startDate = lp.targetDate || new Date().toISOString().slice(0, 10); // USE BACKEND'S DATE
+      // const minutesPerDay = parseMinutesFromTimeString(lp.timeAvailablePerDay);
+      const minutesPerDay = typeof lp.timeAvailablePerDay === "number"
+  ? lp.timeAvailablePerDay
+    : parseMinutesFromTimeString(lp.timeAvailablePerDay);
       const weeks = Array.isArray(lp.weeks) ? lp.weeks : [];
 
       const monthsCount = Math.max(1, Math.ceil(weeks.length / 4));
