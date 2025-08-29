@@ -48,10 +48,21 @@ export default function AimePlannerForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ aim: aime, success, startingLevel: startLevel, targetDate, timePerDay }),
+        body: JSON.stringify({ aim: aime, success, startingLevel: startLevel, targetDate, timePerDay 
+          
+        }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      if (!res.ok) {
+        const errorMessage = `Failed to fetch plan. HTTP ${res.status} - ${res.statusText}`;
+        throw new Error(errorMessage);
+      }
+      console.log("Response from GET plan in form", res);
+      
       const { id } = await res.json();
+      console.log("PlanId returned from GET plan in form", id);
+      console.log("Redirecting to planId page");
+
       await router.push(`/plan/${id}`);
     } catch (err) {
       console.error(err);
