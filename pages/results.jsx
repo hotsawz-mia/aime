@@ -123,12 +123,6 @@ export default function ResultsPage() {
 
     const res = await fetch(`/api/getresult?id=${id}`);
     const data = await res.json();
-    setResults(data.plan); // or setResults(data) if you want the whole object
-    };
-
-    fetchData();
-
-    }, [router.query.id]);
       // ---- Replace this "incoming" with the real backend response ----
       // const incoming = {
       //   plan: {
@@ -256,7 +250,9 @@ export default function ResultsPage() {
     };
 
     fetchData();
-  }, []);
+
+    }, [router.query.id]);
+
 
   // Recompute current month/week/day (clamped within plan length)
   useEffect(() => {
