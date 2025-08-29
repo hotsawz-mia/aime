@@ -64,16 +64,10 @@ Make sure the JSON is valid and parseable.
         ],
     });
     const content = response.data.choices[0]?.message?.content;
-
-    // Remove code block markers if present
-let cleanedContent = content
-  .replace(/```json/g, "")
-  .replace(/```/g, "")
-  .trim();
     // Try to parse the response as JSON
     let plan;
     try {
-      plan = JSON.parse(cleanedContent);
+      plan = JSON.parse(content);
     } catch (e) {
       return res.status(500).json({ error: "OpenAI did not return valid JSON", content });
     }
