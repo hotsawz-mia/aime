@@ -59,39 +59,42 @@ const Plan = () => {
   if (!plan) return <p>No learning plan found.</p>;
 
   return (
-    <div>
-      <h2>{plan.aim}</h2>
-      <p><strong>Success Looks Like:</strong> {plan.successLooksLike}</p>
-      <p><strong>Starting Level:</strong> {plan.startingLevel}</p>
-      <p><strong>Target Date:</strong> {plan.targetDate}</p>
-      <p><strong>Time Available Per Day:</strong> {plan.timeAvailablePerDay} mins</p>
+    <div className="min-h-screen bg-base-200">
+      <main className="mx-auto w-full max-w-2xl p-6 md:p-10">
 
-      {plan.weeks.map((week) => (
-        <div key={week.weekNumber} style={{ marginTop: "1rem" }}>
-          <h3>Week {week.weekNumber}</h3>
+        <h2 className="text-2xl">{plan.aim}</h2>
+        <p className="text-xl p-6"><strong>Success Looks Like:</strong> {plan.successLooksLike}</p>
+        <p className="text-xl p-6"><strong>Starting Level:</strong> {plan.startingLevel}</p>
+        <p className="text-xl p-6"><strong>Target Date:</strong> {plan.targetDate}</p>
+        <p className="text-xl p-6"><strong>Time Available Per Day:</strong> {plan.timeAvailablePerDay} mins</p>
 
-          {week.objectives.length > 0 && (
-            <>
-              <p><strong>Objectives:</strong></p>
-              <ul>{week.objectives.map((obj, idx) => <li key={idx}>{obj}</li>)}</ul>
-            </>
-          )}
+        {plan.weeks.map((week) => (
+          <div key={week.weekNumber} style={{ marginTop: "1rem" }}>
+            <h3 className="text-xl">Week {week.weekNumber}</h3>
 
-          {week.activities.length > 0 && (
-            <>
-              <p><strong>Activities:</strong></p>
-              <ul>{week.activities.map((act, idx) => <li key={idx}>{act}</li>)}</ul>
-            </>
-          )}
+            {week.objectives.length > 0 && (
+              <>
+                <p className="text-large"><strong>Objectives:</strong></p>
+                <ul>{week.objectives.map((obj, idx) => <li key={idx}>{obj}</li>)}</ul>
+              </>
+            )}
 
-          {week.tips.length > 0 && (
-            <>
-              <p><strong>Tips:</strong></p>
-              <ul>{week.tips.map((tip, idx) => <li key={idx}>{tip}</li>)}</ul>
-            </>
-          )}
-        </div>
-      ))}
+            {week.activities.length > 0 && (
+              <>
+                <p className="text-large"><strong>Activities:</strong></p>
+                <ul>{week.activities.map((act, idx) => <li key={idx}>{act}</li>)}</ul>
+              </>
+            )}
+
+            {week.tips.length > 0 && (
+              <>
+                <p className="text-large"><strong>Tips:</strong></p>
+                <ul>{week.tips.map((tip, idx) => <li key={idx}>{tip}</li>)}</ul>
+              </>
+            )}
+          </div>
+        ))}
+      </main>
     </div>
   );
 };

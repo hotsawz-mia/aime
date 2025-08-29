@@ -6,6 +6,7 @@
 import clientPromise from "../../lib/mongodb";
 import { getAuth } from "@clerk/nextjs/server";
 import { Configuration, OpenAIApi } from "openai";
+import JSON5 from "json5";
 
 export default async function handler(req, res) {
     console.log("Inside handler in getplan"); 
@@ -30,33 +31,38 @@ export default async function handler(req, res) {
         timePerDay
     } = req.body;
 
+    // ✅ Validate input before doing anything else
+    if (!aim || !success || !startingLevel || !targetDate || !timePerDay) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // Coerce and validate timePerDay is a number between 1–60
+    const minutes = Number(timePerDay);
+    if (!Number.isFinite(minutes) || minutes < 1 || minutes > 60) {
+      return res.status(400).json({ error: "timePerDay must be a number between 1 and 60" });
+    }
+
     console.log("req.body inside getplan", req.body);
 
-    // hardcoded for testing
-
-    // const aim = "Sing in a rock band";
-    // const success = "Perform at a local venue confidently";
-    // const startingLevel = "Beginner with no stage experience";
-    // const targetDate = "2025-12-31";
-    // const timePerDay = "1 hour";
-
-        // should we try another endpoint other than chatcompletion
-    const response = await openai.createChatCompletion({
+    let content = "";
+    try {
+      const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
-            {
-                role: "system",
-                content: "You are a helpful skill development coach. You create structured, step-by-step learning plans in JSON format."
-            },
-            {
-                role: "user",
-                content: `
+          {
+            role: "system",
+            content:
+              "You are a helpful skill development coach. You create structured, step-by-step learning plans in JSON format.",
+          },
+          {
+            role: "user",
+            content: `
 Here is my information:
 - Aim: ${aim}
 - Success looks like: ${success}
 - Starting level: ${startingLevel}
 - Target date: ${targetDate}
-- Time available per day: ${timePerDay}
+- Time available per day: ${minutes} minutes
 
 Please generate a personalized learning plan in JSON format. 
 Structure it by weeks (or steps if more appropriate), and for each week include:
@@ -64,27 +70,91 @@ Structure it by weeks (or steps if more appropriate), and for each week include:
 - activities
 - tips
 Make sure the JSON is valid and parseable.
-`
-            }
+`,
+          },
         ],
-    });
-
-    // console.log("Raw response from openAI", response);
-
-    const content = response.data.choices[0]?.message?.content;
+      });
+      content = response.data.choices?.[0]?.message?.content ?? "";
+    } catch (e) {
+      console.error("OpenAI call failed:", e);
+      return res.status(502).json({ error: "Upstream AI service failed" });
+    }
 
     console.log("content from openAI response", content); // this is where this code runs until
 
-    // Do we really need to JSONify or it could be something thats already happened 
+    if (!content || typeof content !== "string" || content.trim() === "") {
+      return res.status(502).json({ error: "OpenAI response content is empty or invalid" });
+    }
+
+    function stripAndParseJSON(str) {
+      const trimmed = str.trim();
+      const withoutFences = trimmed.replace(/^```(?:json)?\s*|\s*```$/g, "");
+      return JSON5.parse(withoutFences);
+    }
+
+
     let plan;
     try {
-      plan = JSON.parse(content);
+      plan = stripAndParseJSON(content);
     } catch (e) {
-      return res.status(500).json({ error: "OpenAI did not return valid JSON", content });
+      c.error("Faileonsoled to parse OpenAI response:", e, { content });
+      return res.status(500).json({ error: "OpenAI did not return valid JSON" });
     }
-    console.log("parsed content from plan", plan);
 
-    
+    // const lp = plan?.learning_plan ?? {};
+    // lp.weeks = Array.isArray(lp.weeks) ? lp.weeks : [];
+    // lp.weeks = lp.weeks.map(w => ({
+    //   ...w,
+    //   objectives: Array.isArray(w.objectives) ? w.objectives : (w.objectives ? [w.objectives] : []),
+    //   activities: Array.isArray(w.activities) ? w.activities : (w.activities ? [w.activities] : []),
+    //   tips:       Array.isArray(w.tips)       ? w.tips       : (w.tips       ? [w.tips]       : []),
+    // }));
+    // plan.learning_plan = lp;
+
+    // --- Normalize to a consistent shape we control ---
+    const lp = plan?.learning_plan ?? {};
+
+    const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
+
+    const rawWeeks =
+      Array.isArray(lp.weeks)
+        ? lp.weeks
+        : Array.isArray(lp.weekly_plan)
+        ? lp.weekly_plan
+        : Array.isArray(lp.weeklyPlan)
+        ? lp.weeklyPlan
+        : [];
+
+    const weeks = rawWeeks.map((w) => ({
+      week_number: w.week_number ?? w.weekNumber ?? w.week ?? null,
+      objectives: toArray(w.objectives),
+      activities: toArray(w.activities),
+      tips: toArray(w.tips),
+    }));
+
+    // coerce time per day to a number (minutes)
+    let timePer =
+      typeof lp.time_per_day === "number"
+        ? lp.time_per_day
+        : typeof lp.time_available_per_day === "number"
+        ? lp.time_available_per_day
+        : typeof lp.time_available_per_day === "string"
+        ? parseInt(lp.time_available_per_day, 10)
+        : minutes; // fallback to validated input
+
+    const normalized = {
+      aim: lp.aim ?? lp.target ?? lp.target_skill ?? "",
+      success_criteria: lp.success_criteria ?? lp.successLooksLike ?? "",
+      starting_level: lp.starting_level ?? lp.startingLevel ?? "",
+      target_date: lp.target_date ?? lp.targetDate ?? "",
+      time_per_day: Number.isFinite(timePer) ? timePer : minutes,
+      weeks,
+    };
+
+    plan.learning_plan = normalized;
+    // --- end normalization ---
+
+    console.log("parsed content from plan", plan);
 
     // Insert the plan into MongoDB
     const result = await plans.insertOne({
@@ -95,9 +165,9 @@ Make sure the JSON is valid and parseable.
     });
 
     res.status(200).json({ id: result.insertedId });
-    console.log("planId that was inserted into db", insertedId);
+    // console.log("planId that was inserted into db", insertedId);
+    console.log("planId that was inserted into db", result.insertedId);
   } else {
     res.status(405).json({ message: "Method not allowed" });
   }
 }
-
