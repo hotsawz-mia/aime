@@ -122,6 +122,7 @@ Make sure the JSON is valid and parseable.
 
 
 // Selects the first property that contains an array of weeks, handling different possible key names from OpenAI output.
+// note this is short hand for multiple if elseif block. it is a chained ternary
     const rawWeeks =
       Array.isArray(lp.weeks)
         ? lp.weeks
@@ -131,6 +132,9 @@ Make sure the JSON is valid and parseable.
         ? lp.weeklyPlan
         : [];
 
+// Normalizes each week object to a consistent shape, handling multiple possible key names.
+// The nullish coalescing operator (??) returns the first value that is not null or undefined.
+// Picks w.week_number if it exists, otherwise w.weekNumber, otherwise w.week, otherwise
     const weeks = rawWeeks.map((w) => ({
       week_number: w.week_number ?? w.weekNumber ?? w.week ?? null,
       objectives: toArray(w.objectives),
