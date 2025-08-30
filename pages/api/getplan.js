@@ -120,6 +120,8 @@ Make sure the JSON is valid and parseable.
 // - returns an empty array for falsy values.
     const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
+
+// Selects the first property that contains an array of weeks, handling different possible key names from OpenAI output.
     const rawWeeks =
       Array.isArray(lp.weeks)
         ? lp.weeks
