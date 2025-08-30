@@ -114,6 +114,10 @@ Make sure the JSON is valid and parseable.
     // --- Normalize to a consistent shape we control ---
     const lp = plan?.learning_plan ?? {};
 
+// Ensures any value is returned as an array: 
+// - returns the value if already an array,
+// - wraps non-array truthy values in an array,
+// - returns an empty array for falsy values.
     const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
     const rawWeeks =
