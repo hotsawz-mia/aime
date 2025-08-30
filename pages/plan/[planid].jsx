@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { SignOutButton } from "@clerk/nextjs";
 
 // Normalize the plan object to handle snake_case or camelCase
 const normalizePlan = (plan) => {
@@ -94,6 +95,7 @@ const Plan = () => {
             )}
           </div>
         ))}
+        <SignOutButton>Sign Out</SignOutButton>
       </main>
     </div>
   );
