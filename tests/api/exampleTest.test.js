@@ -2,7 +2,7 @@
  * API tests using direct mock imports.
  *
  * Why direct imports?
- * - We keep all mocks in `/tests/mocks`.
+ * - We keep all mocks in `/__mocks__`.
  * - Instead of importing the *real* API route and swapping it with `jest.mock`,
  *   we import the mock directly so it’s obvious what’s under test.
  * - This avoids confusion: there’s no "pretend real import" that’s secretly replaced.
