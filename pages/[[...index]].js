@@ -1,3 +1,4 @@
+import React from "react";
 import { SignedIn, SignedOut, SignInButton, SignOutButton, SignUp } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ export default function Home() {
       </SignedIn>
       <SignedOut>
         <SignInButton>Sign In</SignInButton>
-        <SignUp path="/register">Sign Up</SignUp>
+        <Link href="/register">Sign Up</Link>
       </SignedOut>
     </div>
   )

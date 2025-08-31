@@ -1,3 +1,4 @@
+import React from "react";
 export const ClerkProvider = ({ children }) => <>{children}</>;
 
 export const useUser = jest.fn(() => ({

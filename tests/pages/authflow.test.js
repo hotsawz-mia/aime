@@ -1,6 +1,7 @@
-
-
-
+import React from "react";
+import '@testing-library/jest-dom';
+import { render, screen } from "@testing-library/react";
+import Home from "../../pages/[[...index]]";
 
 describe('This is a simple practice test suite', ()=>{
     test('checks a calculation', ()=>{
@@ -9,7 +10,16 @@ describe('This is a simple practice test suite', ()=>{
     })
 })
 
-// test that a logged in user gets redirected is show a page with
+describe('signed in and signed out', ()=>{
+    test('a signed out user sees a page with sign in and signup links', ()=>{
+        // setup
+        render(<Home/>)
+        expect(screen.getByText(/sign in/i)).toBeInTheDocument();
+        expect(screen.getByText(/sign up/i)).toBeInTheDocument();        
+    })
+})
+
+// test that a logged in user gets redirected to show a page with
 // signout button/link
 
 // tests that a logged out user is presented with a signin 

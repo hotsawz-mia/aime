@@ -12,8 +12,9 @@
  */
 
 // ignore the linting issue
-import getplan from '../mocks/getplan';
-import getresult from '../mocks/getresult';
+import React from 'react';
+import getplan from '../../__mocks__/getPlan';
+import getresult from '../../__mocks__/getresult';
 
 describe('API endpoint mocks (direct import style)', () => {
   test('getplan returns a mocked plan ID', () => {

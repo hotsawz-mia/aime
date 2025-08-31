@@ -8,7 +8,7 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 // use the format below to create routes that are public and don't require authentication
 // currently this is set up so that users will be redirected to login sugn-up if they are not registered
 const isPublicRoute = createRouteMatcher([
-    "/(.*)",
+    "/",
     "/login(.*)",
     "/register(.*)",
     "/hello(.*)",
@@ -33,7 +33,6 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
-
 
 // turned off clerk for testing
 // import { clerkMiddleware } from '@clerk/nextjs/server';
