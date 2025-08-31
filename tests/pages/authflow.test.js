@@ -17,6 +17,16 @@ describe('signed in and signed out', ()=>{
         expect(screen.getByText(/sign in/i)).toBeInTheDocument();
         expect(screen.getByText(/sign up/i)).toBeInTheDocument();        
     })
+    test('// test that a logged in user gets redirected to show a page with', () =>{
+        const { useUser } = require("@clerk/nextjs");
+        useUser.mockReturnValue({
+        isSignedIn: true,
+        user: { id: "user_123", email: "test@example.com" },
+        });
+        render(<Home/>)
+        expect(screen.getByText(/sign out/i)).toBeInTheDocument();
+        expect(screen.getByText(/Make a plan/i)).toBeInTheDocument();
+    })
 })
 
 // test that a logged in user gets redirected to show a page with
