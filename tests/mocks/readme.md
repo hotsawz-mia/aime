@@ -250,39 +250,47 @@ Mocking your `getPlan` and `getResult` API endpoints is a good idea if you want 
 - Write integration tests that simulate API responses.
 - Ensure your tests are fast, reliable, and isolated from database/network issues.
 
+## Mocking getPlan and getResult API Endpoints
+
+Mocking your `getPlan` and `getResult` API endpoints is a good idea if you want to:
+
+- Test your frontend components or pages without hitting the real backend.
+- Write integration tests that simulate API responses.
+- Ensure your tests are fast, reliable, and isolated from database/network issues.
+
 ### How to Use API Endpoint Mocks in Tests
 
-Add these lines at the top of your test file to replace the real endpoints with your mocks:
+**Direct Import Style (Recommended for Simplicity):**
+
+Instead of importing the real API route and swapping it with `jest.mock`, you can import the mock handler directly from your mocks directory.  
+This makes it clear what is under test and avoids confusion about which implementation is being used.
 
 ```js
-jest.mock('../../pages/api/getplan', () => require('../mocks/getPlan'));
-jest.mock('../../pages/api/getresult', () => require('../mocks/getResult'));
+import getplan from '../mocks/getplan';
+import getresult from '../mocks/getresult';
 ```
 
-When your code calls these API endpoints, Jest will use your mock handlers instead of the real ones.
+When your code calls these handlers in your tests, you are using the mock logic directly.
 
 ### Example Test
 
 ```js
-import getPlan from '../../pages/api/getplan';
-import getResult from '../../pages/api/getresult';
+import getplan from '../mocks/getplan';
+import getresult from '../mocks/getresult';
 
-jest.mock('../../pages/api/getplan', () => require('../mocks/getPlan'));
-jest.mock('../../pages/api/getresult', () => require('../mocks/getResult'));
-
-describe('API endpoint mocks', () => {
-  test('getPlan returns a mocked plan ID', () => {
+describe('API endpoint mocks (direct import style)', () => {
+  test('getplan returns a mocked plan ID', () => {
     const req = { method: 'POST', body: {/* ... */} };
     const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-    getPlan.default(req, res);
+    getplan(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ id: 'mocked-plan-id' });
   });
 
-  test('getResult returns a mocked plan document', () => {
+  test('getresult returns a mocked plan document', () => {
     const req = { method: 'GET', query: { id: 'mocked-plan-id' } };
     const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-    getResult.default(req, res);
+    getresult(req, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
       plan: expect.any(Object),
@@ -294,4 +302,4 @@ describe('API endpoint mocks', () => {
 ```
 
 **Tip:**  
-You can customize the mock responses for different test scenarios
+You can customize the mock responses for different test
