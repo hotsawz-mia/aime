@@ -38,10 +38,10 @@ export default async function handler(req, res) {
     }
 
     // Coerce and validate timePerDay is a number between 1–60
-    const minutes = Number(timePerDay);
-    if (!Number.isFinite(minutes) || minutes < 1 || minutes > 60) {
-      return res.status(400).json({ error: "timePerDay must be a number between 1 and 60" });
-    }
+    // const minutes = Number(timePerDay);
+    // if (!Number.isFinite(minutes) || minutes < 1 || minutes > 60) {
+    //   return res.status(400).json({ error: "timePerDay must be a number between 1 and 60" });
+    // }
 
     console.log("req.body inside getplan", req.body);
 
@@ -63,7 +63,7 @@ Here is my information:
 - Success looks like: ${success}
 - Starting level: ${startingLevel}
 - Target date: ${targetDate}
-- Time available per day: ${minutes} minutes
+- Time available per day: ${timePerDay} minutes
 
 Please generate a personalized learning plan in JSON format. 
 Structure it by weeks (or steps if more appropriate), and for each week include:
@@ -185,10 +185,10 @@ let plan = {
 const normalizedLearningPlan = normalizer(plan);
 plan.learning_plan = {
   aim,
-  successCriteria: success,
+  success: success,
   startingLevel: startingLevel,
   targetDate: targetDate,
-  timePerDay: minutes,
+  timePerDay: timePerDay,
   weeks: normalizedLearningPlan.weeks || []
 };
 
