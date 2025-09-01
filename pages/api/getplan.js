@@ -114,8 +114,16 @@ Make sure the JSON is valid and parseable.
     // --- Normalize to a consistent shape we control ---
     const lp = plan?.learning_plan ?? {};
 
+// Ensures any value is returned as an array: 
+// - returns the value if already an array,
+// - wraps non-array truthy values in an array,
+// - returns an empty array for falsy values.
     const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
+
+// Selects the first property that contains an array of weeks, handling different possible key names from OpenAI output.
+// note this is short hand for multiple if elseif block. it is a chained ternary
+// when testing add any additional ai permutation on weeks
     const rawWeeks =
       Array.isArray(lp.weeks)
         ? lp.weeks
@@ -123,8 +131,14 @@ Make sure the JSON is valid and parseable.
         ? lp.weekly_plan
         : Array.isArray(lp.weeklyPlan)
         ? lp.weeklyPlan
-        : [];
+        : Array.isArray(lp.weekly_plans)
+        ? lp.weekly_plans
+        : Object.values(lp).find(v => Array.isArray(v)) // <-- penultimate fallback picks first key in the data
+        || [];
 
+// Normalizes each week object to a consistent shape, handling multiple possible key names.
+// The nullish coalescing operator (??) returns the first value that is not null or undefined.
+// Picks w.week_number if it exists, otherwise w.weekNumber, otherwise w.week, otherwise
     const weeks = rawWeeks.map((w) => ({
       week_number: w.week_number ?? w.weekNumber ?? w.week ?? null,
       objectives: toArray(w.objectives),
@@ -142,6 +156,8 @@ Make sure the JSON is valid and parseable.
         ? parseInt(lp.time_available_per_day, 10)
         : minutes; // fallback to validated input
 
+// The default here should probably be the original inputs and not
+// come from the the learning plan at all as that is consistent data.
     const normalized = {
       aim: lp.aim ?? lp.target ?? lp.target_skill ?? "",
       success_criteria: lp.success_criteria ?? lp.successLooksLike ?? "",
