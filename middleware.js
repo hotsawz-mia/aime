@@ -11,9 +11,9 @@ const isPublicRoute = createRouteMatcher([
     "/",
     "/login(.*)",
     "/register(.*)",
-    "/hello(.*)",
-    "/api/dbtest",
-    "/results(.*)"
+    // "/hello(.*)",
+    // "/api/dbtest",
+    // "/results(.*)"
     
 ])
 
