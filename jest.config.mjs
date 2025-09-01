@@ -1,8 +1,6 @@
 export default {
-  testEnvironment: "jsdom",
-  // extensionsToTreatAsEsm: [".jsx"], // Remove ".mjs"
-  transform: {
-    "^.+\\.[jt]sx?$": "babel-jest",
-  },
-  moduleFileExtensions: ["js", "jsx", "mjs", "cjs", "json"],
+  testEnvironment: 'jsdom',
+  transform: { '^.+\\.[jt]sx?$': 'babel-jest' },
+  moduleFileExtensions: ['js', 'jsx', 'mjs', 'cjs', 'json'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };
