@@ -7,6 +7,7 @@ import clientPromise from "../../lib/mongodb";
 import { getAuth } from "@clerk/nextjs/server";
 import { Configuration, OpenAIApi } from "openai";
 import JSON5 from "json5";
+import normalizer from "../../lib/normalizer";
 
 export default async function handler(req, res) {
     console.log("Inside handler in getplan"); 
@@ -80,7 +81,7 @@ Make sure the JSON is valid and parseable.
       return res.status(502).json({ error: "Upstream AI service failed" });
     }
 
-    console.log("content from openAI response", content); // this is where this code runs until
+    console.log("content from openAI response", content);
 
     if (!content || typeof content !== "string" || content.trim() === "") {
       return res.status(502).json({ error: "OpenAI response content is empty or invalid" });
@@ -93,81 +94,107 @@ Make sure the JSON is valid and parseable.
     }
 
 
-    let plan;
+let plan = {
+  learning_plan: {
+    weeks: []
+  }
+};
     try {
       plan = stripAndParseJSON(content);
     } catch (e) {
-      c.error("Faileonsoled to parse OpenAI response:", e, { content });
+      console.error("Failed to parse OpenAI response:", e, { content });
       return res.status(500).json({ error: "OpenAI did not return valid JSON" });
     }
 
-    // const lp = plan?.learning_plan ?? {};
-    // lp.weeks = Array.isArray(lp.weeks) ? lp.weeks : [];
-    // lp.weeks = lp.weeks.map(w => ({
-    //   ...w,
-    //   objectives: Array.isArray(w.objectives) ? w.objectives : (w.objectives ? [w.objectives] : []),
-    //   activities: Array.isArray(w.activities) ? w.activities : (w.activities ? [w.activities] : []),
-    //   tips:       Array.isArray(w.tips)       ? w.tips       : (w.tips       ? [w.tips]       : []),
-    // }));
-    // plan.learning_plan = lp;
+//     // const lp = plan?.learning_plan ?? {};
+//     // lp.weeks = Array.isArray(lp.weeks) ? lp.weeks : [];
+//     // lp.weeks = lp.weeks.map(w => ({
+//     //   ...w,
+//     //   objectives: Array.isArray(w.objectives) ? w.objectives : (w.objectives ? [w.objectives] : []),
+//     //   activities: Array.isArray(w.activities) ? w.activities : (w.activities ? [w.activities] : []),
+//     //   tips:       Array.isArray(w.tips)       ? w.tips       : (w.tips       ? [w.tips]       : []),
+//     // }));
+//     // plan.learning_plan = lp;
 
-    // --- Normalize to a consistent shape we control ---
-    const lp = plan?.learning_plan ?? {};
+//     // --- Normalize to a consistent shape we control ---
+//     const lp = plan?.learning_plan ?? {};
 
-// Ensures any value is returned as an array: 
-// - returns the value if already an array,
-// - wraps non-array truthy values in an array,
-// - returns an empty array for falsy values.
-    const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
+// // Ensures any value is returned as an array: 
+// // - returns the value if already an array,
+// // - wraps non-array truthy values in an array,
+// // - returns an empty array for falsy values.
+//     const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
 
-// Selects the first property that contains an array of weeks, handling different possible key names from OpenAI output.
-// note this is short hand for multiple if elseif block. it is a chained ternary
-// when testing add any additional ai permutation on weeks
-    const rawWeeks =
-      Array.isArray(lp.weeks)
-        ? lp.weeks
-        : Array.isArray(lp.weekly_plan)
-        ? lp.weekly_plan
-        : Array.isArray(lp.weeklyPlan)
-        ? lp.weeklyPlan
-        : Array.isArray(lp.weekly_plans)
-        ? lp.weekly_plans
-        : Object.values(lp).find(v => Array.isArray(v)) // <-- penultimate fallback picks first key in the data
-        || [];
+// // Selects the first property that contains an array of weeks, handling different possible key names from OpenAI output.
+// // note this is short hand for multiple if elseif block. it is a chained ternary
+// // when testing add any additional ai permutation on weeks
+//     const rawWeeks =
+//       Array.isArray(lp.weeks)
+//         ? lp.weeks
+//         : Array.isArray(lp.weekly_plan)
+//         ? lp.weekly_plan
+//         : Array.isArray(lp.weeklyPlan)
+//         ? lp.weeklyPlan
+//         : Array.isArray(lp.weekly_plans)
+//         ? lp.weekly_plans
+//         : Object.values(lp).find(v => Array.isArray(v)) // <-- penultimate fallback picks first key in the data
+//         || [];
 
-// Normalizes each week object to a consistent shape, handling multiple possible key names.
-// The nullish coalescing operator (??) returns the first value that is not null or undefined.
-// Picks w.week_number if it exists, otherwise w.weekNumber, otherwise w.week, otherwise
-    const weeks = rawWeeks.map((w) => ({
-      week_number: w.week_number ?? w.weekNumber ?? w.week ?? null,
-      objectives: toArray(w.objectives),
-      activities: toArray(w.activities),
-      tips: toArray(w.tips),
-    }));
+// // Normalizes each week object to a consistent shape, handling multiple possible key names.
+// // The nullish coalescing operator (??) returns the first value that is not null or undefined.
+// // Picks w.week_number if it exists, otherwise w.weekNumber, otherwise w.week, otherwise
+//     const weeks = rawWeeks.map((w) => ({
+//       week_number: w.week_number ?? w.weekNumber ?? w.week ?? null,
+//       objectives: toArray(w.objectives),
+//       activities: toArray(w.activities),
+//       tips: toArray(w.tips),
+//     }));
 
-    // coerce time per day to a number (minutes)
-    let timePer =
-      typeof lp.time_per_day === "number"
-        ? lp.time_per_day
-        : typeof lp.time_available_per_day === "number"
-        ? lp.time_available_per_day
-        : typeof lp.time_available_per_day === "string"
-        ? parseInt(lp.time_available_per_day, 10)
-        : minutes; // fallback to validated input
+//     // coerce time per day to a number (minutes)
+//     let timePer =
+//       typeof lp.time_per_day === "number"
+//         ? lp.time_per_day
+//         : typeof lp.time_available_per_day === "number"
+//         ? lp.time_available_per_day
+//         : typeof lp.time_available_per_day === "string"
+//         ? parseInt(lp.time_available_per_day, 10)
+//         : minutes; // fallback to validated input
 
-// The default here should probably be the original inputs and not
-// come from the the learning plan at all as that is consistent data.
-    const normalized = {
-      aim: lp.aim ?? lp.target ?? lp.target_skill ?? "",
-      success_criteria: lp.success_criteria ?? lp.successLooksLike ?? "",
-      starting_level: lp.starting_level ?? lp.startingLevel ?? "",
-      target_date: lp.target_date ?? lp.targetDate ?? "",
-      time_per_day: Number.isFinite(timePer) ? timePer : minutes,
-      weeks,
-    };
+// // The default here should probably be the original inputs and not
+// // come from the the learning plan at all as that is consistent data.
+//     const normalized = {
+//       aim: lp.aim ?? lp.target ?? lp.target_skill ?? "",
+//       success_criteria: lp.success_criteria ?? lp.successLooksLike ?? "",
+//       starting_level: lp.starting_level ?? lp.startingLevel ?? "",
+//       target_date: lp.target_date ?? lp.targetDate ?? "",
+//       time_per_day: Number.isFinite(timePer) ? timePer : minutes,
+//       weeks,
+//     };
 
-    plan.learning_plan = normalized;
+    // // coerce time per day to a number (minutes)
+    // let timePer =
+    //   typeof lp.time_per_day === "number"
+    //     ? lp.time_per_day
+    //     : typeof lp.time_available_per_day === "number"
+    //     ? lp.time_available_per_day
+    //     : typeof lp.time_available_per_day === "string"
+    //     ? parseInt(lp.time_available_per_day, 10)
+    //     : minutes; // fallback to validated input
+
+const normalizedLearningPlan = normalizer(plan);
+plan.learning_plan = {
+  aim,
+  success_criteria: success,
+  starting_level: startingLevel,
+  target_date: targetDate,
+  time_per_day: minutes,
+  weeks: normalizedLearningPlan.weeks || []
+};
+
+ 
+    
+    
     // --- end normalization ---
 
     console.log("parsed content from plan", plan);
