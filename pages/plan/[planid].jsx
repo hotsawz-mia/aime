@@ -22,7 +22,7 @@ const normalizePlan = (plan) => {
     successLooksLike: learningPlan.successLooksLike ?? learningPlan.success_criteria ?? "",
     startingLevel: learningPlan.startingLevel ?? learningPlan.starting_level ?? "",
     targetDate: learningPlan.targetDate ?? learningPlan.target_date ?? "",
-    timeAvailablePerDay: learningPlan.timeAvailablePerDay ?? learningPlan.time_available_per_day ?? 0,
+timeAvailablePerDay: learningPlan.time_per_day ?? learningPlan.timeAvailablePerDay ?? learningPlan.time_available_per_day ?? 0,
     weeks,
   };
 };
