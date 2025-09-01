@@ -18,6 +18,8 @@ jest.mock("next/link", () => {
   );
 });
 import Home from "../../pages/[[...index]]";
+const AimePlannerForm = require("../../pages/form").default;
+import NormalizePlan from "../../pages/[[...index]]"
 
 
 describe('This is a simple practice test suite', ()=>{
@@ -43,7 +45,6 @@ describe('signed in and signed out', ()=>{
         render(<Home/>)
         expect(screen.getByText(/sign out/i)).toBeInTheDocument();
         expect(screen.getByText(/Make a plan/i)).toBeInTheDocument();
-        expect(screen.getByText(/Make a plan/i)).toBeInTheDocument();
     })
 
       test('test that a make a plan link navigates to the form page when clicked', async () => {
@@ -63,16 +64,42 @@ describe('signed in and signed out', ()=>{
 
     expect(push).toHaveBeenCalledWith("/form");
   });
+// add this comonent -level test later if required. Clerk Middleware currently handles this scenario effectively
+//   test('form page redirects or blocks access when not logged in', () => {
+//   const { useUser } = require("@clerk/nextjs");
+//   useUser.mockReturnValue({
+//     isSignedIn: false,
+//     user: null,
+//   });
+
+//   // Render your form page component here (e.g., <FormPage />)
+//   render(<AimePlannerForm />);
+
+//   // Assert that the user is redirected, or a sign-in prompt is shown
+//   expect(screen.getByText(/sign in/i)).toBeInTheDocument();
+//   // Or, if you redirect, check for navigation or a message
+// });
+
+test('signout button returns the user to the home page from the planid page', async () => {
+  const { useUser } = require("@clerk/nextjs");
+  useUser.mockReturnValue({
+    isSignedIn: true,
+    user: { id: "user_123", email: "test@example.com" },
+  });
+
+  // Mock the router
+  const push = jest.fn();
+  jest.spyOn(require("next/router"), "useRouter").mockReturnValue({ push });
+
+  // Render your plan page component (replace with your actual import if needed)
+  render(<NormalizePlan />);
+
+  // Find and click the signout button
+  const signOutButton = screen.getByText(/sign out/i);
+  await userEvent.click(signOutButton);
+
+  // Assert that the user is redirected to the home page
+  expect(push).toHaveBeenCalledWith("/");
+});
 })
 
-// 
-
-// tests that a logged out user is presented with a signin 
-// and signup link or button
-
-// tests that the home page has a link to the formpage
-
-// tests that the the link navigates to the form page when logged in
-// tests that the form page is protected when not logged in
-// tests that the signout button returns the user to the home page
-// from the planid page
