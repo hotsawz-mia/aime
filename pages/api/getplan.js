@@ -185,10 +185,10 @@ let plan = {
 const normalizedLearningPlan = normalizer(plan);
 plan.learning_plan = {
   aim,
-  success_criteria: success,
-  starting_level: startingLevel,
-  target_date: targetDate,
-  time_per_day: minutes,
+  successCriteria: success,
+  startingLevel: startingLevel,
+  targetDate: targetDate,
+  timePerDay: minutes,
   weeks: normalizedLearningPlan.weeks || []
 };
 
