@@ -72,7 +72,7 @@ const Plan = () => {
         <p className="text-xl p-6"><strong>Time Available Per Day:</strong> {plan.timePerDay} mins</p> */}
 
 <h2 className="text-2xl">{learning_plan.aim}</h2>
-<p className="text-xl p-6"><strong>Success Looks Like:</strong> {learning_plan.successCriteria}</p>
+<p className="text-xl p-6"><strong>Success Looks Like:</strong> {learning_plan.success}</p>
 <p className="text-xl p-6"><strong>Starting Level:</strong> {learning_plan.startingLevel}</p>
 <p className="text-xl p-6"><strong>Target Date:</strong> {learning_plan.targetDate}</p>
 <p className="text-xl p-6"><strong>Time Available Per Day:</strong> {learning_plan.timePerDay} mins</p>
