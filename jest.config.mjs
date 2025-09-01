@@ -1,6 +1,6 @@
 export default {
   testEnvironment: "jsdom",
-  extensionsToTreatAsEsm: [".jsx"], // Remove ".mjs"
+  // extensionsToTreatAsEsm: [".jsx"], // Remove ".mjs"
   transform: {
     "^.+\\.[jt]sx?$": "babel-jest",
   },
