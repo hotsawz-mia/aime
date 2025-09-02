@@ -136,6 +136,58 @@ describe("Normalizer", () => {
       expect(result.weeks[0].weekNumber).toBe(10);
       expect(result.weeks[1].weekNumber).toBe(100);
     });
+test("handles plain number keys (1, 2, 3, etc.)", () => {
+  const input = {
+    learning_plan: {
+      weekly_plan: [
+        {
+          "1": {
+            objectives: ["Week 1 with number key"],
+            activities: ["Number key activity"],
+            tips: ["Number key tip"]
+          }
+        },
+        {
+          "2": {
+            objectives: ["Week 2 with number key"],
+            activities: ["Another number activity"],
+            tips: ["Another number tip"]
+          }
+        },
+        {
+          "10": {
+            objectives: ["Week 10 with double digit"],
+            activities: ["Double digit activity"],
+            tips: ["Double digit tip"]
+          }
+        }
+      ]
+    }
+  };
+
+  const result = Normalizer(input);
+
+  expect(result.weeks).toHaveLength(3);
+  expect(result.weeks[0]).toEqual({
+      weekNumber: 1,
+    objectives: ["Week 1 with number key"],
+    activities: ["Number key activity"],
+    tips: ["Number key tip"]
+  });
+  expect(result.weeks[1]).toEqual({
+    weekNumber: 2,
+    objectives: ["Week 2 with number key"],
+    activities: ["Another number activity"],
+    tips: ["Another number tip"]
+  });
+  expect(result.weeks[2]).toEqual({
+    weekNumber: 10,
+    objectives: ["Week 10 with double digit"],
+    activities: ["Double digit activity"],
+    tips: ["Double digit tip"]
+  });
+});
+    
   });
 
   describe("Flat week structure handling", () => {
@@ -460,4 +512,43 @@ describe("Normalizer", () => {
       });
     });
   });
+
+  test("handles mix of number keys and word keys", () => {
+  const input = {
+    learning_plan: {
+      weekly_plan: [
+        {
+          "1": {
+            objectives: ["Plain number key"],
+            activities: ["Test"],
+            tips: ["Test"]
+          }
+        },
+        {
+          week_2: {
+            objectives: ["Word-based key"],
+            activities: ["Test"],
+            tips: ["Test"]
+          }
+        },
+        {
+          "3": {
+            objectives: ["Another number key"],
+            activities: ["Test"],
+            tips: ["Test"]
+          }
+        }
+      ]
+    }
+  };
+
+  const result = Normalizer(input);
+
+  expect(result.weeks[0].weekNumber).toBe(1);
+  expect(result.weeks[0].objectives).toEqual(["Plain number key"]);
+  expect(result.weeks[1].weekNumber).toBe(2);
+  expect(result.weeks[1].objectives).toEqual(["Word-based key"]);
+  expect(result.weeks[2].weekNumber).toBe(3);
+  expect(result.weeks[2].objectives).toEqual(["Another number key"]);
+});
 });
