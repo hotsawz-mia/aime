@@ -89,8 +89,13 @@ Make sure the JSON is valid and parseable.
     function stripAndParseJSON(str) {
       const trimmed = str.trim();
       const withoutFences = trimmed.replace(/^```(?:json)?\s*|\s*```$/g, "");
-      return JSON5.parse(withoutFences);
+      try{
+        return JSON5.parse(withoutFences);
+      } catch (e) {
+        throw new Error("Failed to parse JSON");
+      }
     }
+    
 
 
     let plan;
@@ -172,7 +177,8 @@ Make sure the JSON is valid and parseable.
 
     console.log("parsed content from plan", plan);
 
-    // Insert the plan into MongoDB
+  try{
+     // Insert the plan into MongoDB
     const result = await plans.insertOne({
       plan,
       createdAt: new Date(),
@@ -180,10 +186,18 @@ Make sure the JSON is valid and parseable.
       userId
     });
 
+    console.log("MongoDB insertOne result:", result);
+
     res.status(200).json({ id: result.insertedId });
-    // console.log("planId that was inserted into db", insertedId);
     console.log("planId that was inserted into db", result.insertedId);
-  } else {
-    res.status(405).json({ message: "Method not allowed" });
+  } catch (e) {
+    console.error("MongoDB insert failed:", e);
+    if (e.message === "Method not allowed") {
+      return res.status(405).json({error: "Method not allowed"});
+    }
+    return res.status(500).json({error: "Database insert failed"});
+    }
   }
 }
+
+
