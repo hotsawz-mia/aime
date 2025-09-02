@@ -99,7 +99,7 @@ Make sure the JSON is valid and parseable. There should be ${numberOfWeeksForPla
 
 
 let plan = {
-  learning_plan: {
+  learningPlan: {
     weeks: []
   }
 };
@@ -112,7 +112,7 @@ let plan = {
 
 // uses imported helper function to normalize Ai response before saving to DB
 const normalizedLearningPlan = normalizer(plan);
-plan.learning_plan = {
+plan.learningPlan = {
   aim,
   success: success,
   startingLevel: startingLevel,

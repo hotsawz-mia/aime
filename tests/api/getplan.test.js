@@ -104,7 +104,7 @@ describe("POST /api/getplan", () => {
             {
                 message: {
                 content: `{
-                    "learning_plan": {
+                    "learningPlan": {
                     "aim": "Learn guitar",
                     "success_criteria": "Play one song",
                     "starting_level": "Beginner",
@@ -143,7 +143,7 @@ describe("POST /api/getplan", () => {
 
     test("returns the parsed mock plan document in the DB insert", async () => {
     const mockPlanContent = `{
-        "learning_plan": {
+        "learningPlan": {
             "aim": "Learn guitar",
             "success": "Play one song",
             "startingLevel": "Beginner",
@@ -260,7 +260,7 @@ describe("POST /api/getplan", () => {
                 choices:[{
                     message: {
                         content: `{
-                        "learning_plan": {
+                        "learningPlan": {
                         "aim": "Learn guitar",
                         "success_criteria": "Play one song",
                         "starting_level": "Beginner",

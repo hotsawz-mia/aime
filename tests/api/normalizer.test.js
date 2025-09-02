@@ -16,7 +16,7 @@ describe("Normalizer", () => {
   describe("Nested week structure handling", () => {
     test("extracts data from week_1, week_2 format", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plan: [
             {
               week_1: {
@@ -55,7 +55,7 @@ describe("Normalizer", () => {
 
     test("handles case insensitive week keys", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plan: [
             {
               Week_1: {
@@ -83,7 +83,7 @@ describe("Normalizer", () => {
 
     test("handles different separators in week keys", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plan: [
             {
               "week-1": {
@@ -111,7 +111,7 @@ describe("Normalizer", () => {
 
     test("handles multi-digit week numbers", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plan: [
             {
               week_10: {
@@ -138,7 +138,7 @@ describe("Normalizer", () => {
     });
 test("handles plain number keys (1, 2, 3, etc.)", () => {
   const input = {
-    learning_plan: {
+    learningPlan: {
       weekly_plan: [
         {
           "1": {
@@ -193,7 +193,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
   describe("Flat week structure handling", () => {
     test("processes flat week structure", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: [
             {
               weekNumber: 1,
@@ -229,7 +229,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("handles missing week numbers", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: [
             {
               objectives: ["No week number"],
@@ -249,7 +249,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
   describe("Different week array key handling", () => {
     test("finds weeks in weekly_plan key", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plan: [
             {
               objectives: ["From weekly_plan"],
@@ -266,7 +266,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("finds weeks in weeklyPlan key", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeklyPlan: [
             {
               objectives: ["From weeklyPlan"],
@@ -283,7 +283,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("finds weeks in weekly_plans key", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plans: [
             {
               objectives: ["From weekly_plans"],
@@ -298,9 +298,9 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
       expect(result.weeks[0].objectives).toEqual(["From weekly_plans"]);
     });
 
-    test("falls back to first array found in learning_plan", () => {
+    test("falls back to first array found in learningPlan", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           some_other_array: [
             {
               objectives: ["From fallback"],
@@ -320,7 +320,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
   describe("toArray functionality", () => {
     test("ensures single values become arrays", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: [
             {
               objectives: "Single objective",
@@ -340,7 +340,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("preserves existing arrays", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: [
             {
               objectives: ["Already", "an", "array"],
@@ -360,7 +360,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("handles null/undefined values", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: [
             {
               objectives: null,
@@ -380,15 +380,15 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
   });
 
   describe("Edge cases", () => {
-    test("handles empty learning_plan", () => {
-      const input = { learning_plan: {} };
+    test("handles empty learningPlan", () => {
+      const input = { learningPlan: {} };
 
       const result = Normalizer(input);
 
       expect(result.weeks).toEqual([]);
     });
 
-    test("handles missing learning_plan", () => {
+    test("handles missing learningPlan", () => {
       const input = {};
 
       const result = Normalizer(input);
@@ -410,7 +410,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("handles empty weeks array", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: []
         }
       };
@@ -420,9 +420,9 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
       expect(result.weeks).toEqual([]);
     });
 
-    test("preserves other learning_plan properties", () => {
+    test("preserves other learningPlan properties", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           aim: "Test aim",
           success_criteria: "Test criteria",
           weeks: [
@@ -446,7 +446,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
   describe("Mixed structure handling", () => {
     test("handles mix of nested and flat weeks", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weekly_plan: [
             {
               week_1: {
@@ -475,7 +475,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
     test("handles weeks with missing properties", () => {
       const input = {
-        learning_plan: {
+        learningPlan: {
           weeks: [
             {
               objectives: ["Has objectives only"]
@@ -515,7 +515,7 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
   test("handles mix of number keys and word keys", () => {
   const input = {
-    learning_plan: {
+    learningPlan: {
       weekly_plan: [
         {
           "1": {
@@ -556,9 +556,9 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
 // Add this new describe block after the "Mixed structure handling" section
 describe("Direct week properties handling", () => {
-  test("handles direct week properties in learning_plan (no array wrapper)", () => {
+  test("handles direct week properties in learningPlan (no array wrapper)", () => {
     const input = {
-      learning_plan: {
+      learningPlan: {
         week_1: {
           objectives: ["Understand basic vocal techniques", "Learn 1 rock song lyrics"],
           activities: ["Watch vocal technique tutorials online", "Practice singing scales for 10 minutes daily"],
@@ -602,7 +602,7 @@ describe("Direct week properties handling", () => {
 
   test("handles direct week properties with mixed key formats", () => {
     const input = {
-      learning_plan: {
+      learningPlan: {
         week_1: {
           objectives: ["First week with underscore"],
           activities: ["Test activity"],
@@ -641,7 +641,7 @@ describe("Direct week properties handling", () => {
 
   test("handles direct week properties with many weeks", () => {
     const input = {
-      learning_plan: {
+      learningPlan: {
         week_1: { objectives: ["Week 1"], activities: ["Activity 1"], tips: ["Tip 1"] },
         week_2: { objectives: ["Week 2"], activities: ["Activity 2"], tips: ["Tip 2"] },
         week_3: { objectives: ["Week 3"], activities: ["Activity 3"], tips: ["Tip 3"] },
@@ -664,7 +664,7 @@ describe("Direct week properties handling", () => {
 
   test("prioritizes array format over direct properties", () => {
     const input = {
-      learning_plan: {
+      learningPlan: {
         // Array format should take priority
         weekly_plan: [
           {
@@ -694,7 +694,7 @@ describe("Direct week properties handling", () => {
   // Add this test to your "Direct week properties handling" describe block
 test("handles weeks as an object containing week properties", () => {
   const input = {
-    learning_plan: {
+    learningPlan: {
       total_weeks: 17,
       start_date: "2025-09-08",
       end_date: "2025-12-25",
