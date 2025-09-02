@@ -2,31 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { SignOutButton } from "@clerk/nextjs";
 
-// Normalize the plan object to handle snake_case or camelCase
-// const normalizePlan = (plan) => {
-//   if (!plan) return null;
-
-//   const learningPlan = plan.learningPlan || plan.learning_plan || {};
-
-//   const rawWeeks = learningPlan.weeks || learningPlan.weeklyPlan || [];
-
-//   const weeks = rawWeeks.map((w) => ({
-//     weekNumber: w.weekNumber ?? w.week_number,
-//     objectives: w.objectives ?? [],
-//     activities: w.activities ?? [],
-//     tips: w.tips ?? [],
-//   }));
-
-//   return {
-//     aim: learningPlan.aim ?? "",
-//     successLooksLike: learningPlan.successLooksLike ?? learningPlan.success_criteria ?? "",
-//     startingLevel: learningPlan.startingLevel ?? learningPlan.starting_level ?? "",
-//     targetDate: learningPlan.targetDate ?? learningPlan.target_date ?? "",
-// timeAvailablePerDay: learningPlan.time_per_day ?? learningPlan.timeAvailablePerDay ?? learningPlan.time_available_per_day ?? 0,
-//     weeks,
-//   };
-// };
-
 
 const Plan = () => {
   const [data, setData] = useState(null);
@@ -61,52 +36,112 @@ const Plan = () => {
   const { learning_plan } = data.plan;
   if (!learning_plan) return <p>No learning plan found.</p>;
 
+
   return (
-    <div className="min-h-screen bg-base-200">
-      <main className="mx-auto w-full max-w-2xl p-6 md:p-10">
-{/* 
-        <h2 className="text-2xl">{plan.aim}</h2>
-        <p className="text-xl p-6"><strong>Success Looks Like:</strong> {plan.successLooksLike}</p>
-        <p className="text-xl p-6"><strong>Starting Level:</strong> {plan.startingLevel}</p>
-        <p className="text-xl p-6"><strong>Target Date:</strong> {plan.targetDate}</p>
-        <p className="text-xl p-6"><strong>Time Available Per Day:</strong> {plan.timePerDay} mins</p> */}
+    <div data-theme="synthwave" className="min-h-screen bg-base-200">
+      <main className="mx-auto w-full max-w-3xl p-6 md:p-10 space-y-6">
+        {/* Header card */}
+        <div className="card bg-base-100/80 backdrop-blur shadow-xl">
+          <div className="card-body">
+            <h1 className="card-title text-3xl text-secondary">
+              {learning_plan.aim}
+            </h1>
 
-<h2 className="text-2xl">{learning_plan.aim}</h2>
-<p className="text-xl p-6"><strong>Success Looks Like:</strong> {learning_plan.success}</p>
-<p className="text-xl p-6"><strong>Starting Level:</strong> {learning_plan.startingLevel}</p>
-<p className="text-xl p-6"><strong>Target Date:</strong> {learning_plan.targetDate}</p>
-<p className="text-xl p-6"><strong>Time Available Per Day:</strong> {learning_plan.timePerDay} mins</p>
-        {/* {plan.weeks.map((week) => ( */}
-          {learning_plan.weeks.map((week) => (
-          <div key={week.weekNumber} style={{ marginTop: "1rem" }}>
-            <h3 className="text-xl">Week {week.weekNumber}</h3>
-
-            {week.objectives.length > 0 && (
-              <>
-                <p className="text-large"><strong>Objectives:</strong></p>
-                <ul>{week.objectives.map((obj, idx) => <li key={idx}>{obj}</li>)}</ul>
-              </>
-            )}
-
-            {week.activities.length > 0 && (
-              <>
-                <p className="text-large"><strong>Activities:</strong></p>
-                <ul>{week.activities.map((act, idx) => <li key={idx}>{act}</li>)}</ul>
-              </>
-            )}
-
-            {week.tips.length > 0 && (
-              <>
-                <p className="text-large"><strong>Tips:</strong></p>
-                <ul>{week.tips.map((tip, idx) => <li key={idx}>{tip}</li>)}</ul>
-              </>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <p className="text-lg">
+                <strong className="text-accent">Success Looks Like:</strong>{" "}
+                {learning_plan.success}
+              </p>
+              <p className="text-lg">
+                <strong className="text-info">Starting Level:</strong>{" "}
+                {learning_plan.startingLevel}
+              </p>
+              <p className="text-lg">
+                <strong className="text-warning">Target Date:</strong>{" "}
+                {learning_plan.targetDate}
+              </p>
+              <p className="text-lg">
+                <strong className="text-primary">Time / Day:</strong>{" "}
+                {learning_plan.timePerDay} mins
+              </p>
+            </div>
           </div>
-        ))}
-        <SignOutButton>Sign Out</SignOutButton>
+        </div>
+
+        {/* Weeks accordion — highlight whichever is open */}
+        <section className="space-y-3">
+          {learning_plan.weeks.map((week) => (
+            <details
+              key={week.weekNumber}
+                className="collapse collapse-arrow bg-base-100/70 backdrop-blur shadow transition-all duration-200
++                          open:bg-neutral/10 open:ring-2 open:ring-neutral"
+              open={week.weekNumber === 1} // Week 1 shown by default
+            >
+              <summary
+                className="collapse-title text-xl font-bold select-none
++                          text-secondary open:text-neutral"
+              >
+                <span className="opacity-85">Week</span>{" "}
+                <span className="font-extrabold">{week.weekNumber}</span>
+              </summary>
+
+              <div className="collapse-content space-y-4">
+                {/* Objectives */}
+                {Array.isArray(week.objectives) && week.objectives.length > 0 && (
+                  <div>
+                    <p className="text-lg font-semibold text-accent">Objectives</p>
+                    <ul className="list-disc list-inside marker:text-base">
+                      {week.objectives.map((obj, idx) => (
+                        <li key={idx}>{obj}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Activities as checkbox list */}
+                {Array.isArray(week.activities) && week.activities.length > 0 && (
+                  <div>
+                    <p className="text-lg font-semibold text-success">Activities</p>
+                    <div className="form-control gap-2">
+                      {week.activities.map((act, idx) => (
+                        <label
+                          key={idx}
+                          className="label cursor-pointer justify-start gap-3 p-0"
+                        >
+                          <input type="checkbox" className="checkbox checkbox-success" />
+                          <span className="label-text">{act}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tips */}
+                {Array.isArray(week.tips) && week.tips.length > 0 && (
+                  <div>
+                    <p className="text-lg font-semibold text-primary">Tips</p>
+                    <ul className="list-disc list-inside marker:text-primary">
+                      {week.tips.map((tip, idx) => (
+                        <li key={idx}>{tip}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </details>
+          ))}
+        </section>
+
+        <div className="flex justify-end">
+          <SignOutButton>
+            <button className="btn btn-error">Sign Out</button>
+          </SignOutButton>
+        </div>
       </main>
     </div>
   );
 };
 
 export default Plan;
+
+// one comment for the puposes of github
