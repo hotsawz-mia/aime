@@ -556,6 +556,33 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
 // Add this new describe block after the "Mixed structure handling" section
 describe("Direct week properties handling", () => {
+  test("handles direct week properties with learning_plan (snake_case)", () => {
+    const input = {
+      learning_plan: {  // ← snake_case key
+        week_1: {
+          objectives: ["Understand basic vocal techniques"],
+          activities: ["Watch online tutorials"],
+          tips: ["Focus on breathing"]
+        },
+        week_2: {
+          objectives: ["Improve pitch accuracy"],
+          activities: ["Practice scales"],
+          tips: ["Use a tuner"]
+        }
+      }
+    };
+
+    const result = Normalizer(input);
+
+    expect(result.weeks).toHaveLength(2);
+    expect(result.weeks[0]).toEqual({
+      weekNumber: 1,
+      objectives: ["Understand basic vocal techniques"],
+      activities: ["Watch online tutorials"],
+      tips: ["Focus on breathing"]
+    });
+  });
+
   test("handles direct week properties in learningPlan (no array wrapper)", () => {
     const input = {
       learningPlan: {

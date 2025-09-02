@@ -111,7 +111,7 @@ describe("POST /api/getplan", () => {
                     "target_date": "2025-12-31",
                     "time_per_day": 30,
                     "weeks": [
-                        { "week_number": 1, "objectives": ["Learn chords"], "activities": ["Practice"], "tips": ["Stay consistent"] }
+                        { "weekNumber": 1, "objectives": ["Learn chords"], "activities": ["Practice"], "tips": ["Stay consistent"] }
                     ]
                     }
                 }`,
