@@ -145,12 +145,12 @@ describe("POST /api/getplan", () => {
     const mockPlanContent = `{
         "learning_plan": {
             "aim": "Learn guitar",
-            "success_criteria": "Play one song",
-            "starting_level": "Beginner",
-            "target_date": "2025-12-31",
-            "time_per_day": 30,
+            "success": "Play one song",
+            "startingLevel": "Beginner",
+            "targetDate": "2025-12-31",
+            "timePerDay": "30",
             "weeks": [
-                { "week_number": 1, "objectives": ["Learn chords"], "activities": ["Practice"], "tips": ["Stay consistent"] }
+                { "weekNumber": 1, "objectives": ["Learn chords"], "activities": ["Practice"], "tips": ["Stay consistent"] }
             ]
         }
     }`;
