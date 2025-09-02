@@ -9,6 +9,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import { Configuration, OpenAIApi } from "openai";
 import JSON5 from "json5";
 import normalizer from "../../lib/normalizer";
+import calculateWeeks from "../../lib/calculateWeeks";
 
 export default async function handler(req, res) {
     console.log("Inside handler in getplan"); 
@@ -40,6 +41,8 @@ export default async function handler(req, res) {
 
     console.log("req.body inside getplan", req.body);
 
+    const numberOfWeeksForPlan = calculateWeeks(targetDate)
+
     let content = "";
     try {
       const response = await openai.createChatCompletion({
@@ -58,14 +61,15 @@ Here is my information:
 - Success looks like: ${success}
 - Starting level: ${startingLevel}
 - Target date: ${targetDate}
+- Total weeks ${numberOfWeeksForPlan}
 - Time available per day: ${timePerDay} minutes
 
 Please generate a personalized learning plan in JSON format. 
-Structure it by weeks (or steps if more appropriate), and for each week include:
+Structure it by weeks and for each week include:
 - objectives
 - activities
 - tips
-Make sure the JSON is valid and parseable.
+Make sure the JSON is valid and parseable. There should be ${numberOfWeeksForPlan} weeks in total
 `,
           },
         ],
