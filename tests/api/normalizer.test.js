@@ -690,4 +690,59 @@ describe("Direct week properties handling", () => {
     expect(result.weeks[0].objectives).toEqual(["From array format"]);
     expect(result.weeks[0].activities).toEqual(["Array activity"]);
   });
+
+  // Add this test to your "Direct week properties handling" describe block
+test("handles weeks as an object containing week properties", () => {
+  const input = {
+    learning_plan: {
+      total_weeks: 17,
+      start_date: "2025-09-08",
+      end_date: "2025-12-25",
+      weeks: {
+        week_1: {
+          objectives: ["Understand basic skin care routine"],
+          activities: ["Research basic skin care steps", "Identify your skin type"],
+          tips: ["Start with gentle, fragrance-free products"]
+        },
+        week_2: {
+          objectives: ["Establish a daily skin care routine"],
+          activities: ["Purchase essential skin care products", "Create a morning and evening routine"],
+          tips: ["Consistency is key in seeing results"]
+        },
+        week_3: {
+          objectives: ["Address specific skin concerns"],
+          activities: ["Consult a dermatologist if needed", "Add targeted treatments"],
+          tips: ["Don't overwhelm your skin with too many new products at once"]
+        }
+      }
+    }
+  };
+
+  const result = Normalizer(input);
+
+  expect(result.weeks).toHaveLength(3);
+  expect(result.weeks[0]).toEqual({
+    weekNumber: 1,
+    objectives: ["Understand basic skin care routine"],
+    activities: ["Research basic skin care steps", "Identify your skin type"],
+    tips: ["Start with gentle, fragrance-free products"]
+  });
+  expect(result.weeks[1]).toEqual({
+    weekNumber: 2,
+    objectives: ["Establish a daily skin care routine"],
+    activities: ["Purchase essential skin care products", "Create a morning and evening routine"],
+    tips: ["Consistency is key in seeing results"]
+  });
+  expect(result.weeks[2]).toEqual({
+    weekNumber: 3,
+    objectives: ["Address specific skin concerns"],
+    activities: ["Consult a dermatologist if needed", "Add targeted treatments"],
+    tips: ["Don't overwhelm your skin with too many new products at once"]
+  });
+  
+  // Also verify other properties are preserved
+  expect(result.total_weeks).toBe(17);
+  expect(result.start_date).toBe("2025-09-08");
+  expect(result.end_date).toBe("2025-12-25");
+});
 });
