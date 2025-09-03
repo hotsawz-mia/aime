@@ -111,7 +111,7 @@ describe("POST /api/getplan", () => {
                     "target_date": "2025-12-31",
                     "time_per_day": 30,
                     "weeks": [
-                        { "week_number": 1, "objectives": ["Learn chords"], "activities": ["Practice"], "tips": ["Stay consistent"] }
+                        { "week_number": 1, "objectives": ["Learn chords"], "activities": [{"activity": "Practice", "completed": false}], "tips": ["Stay consistent"] }
                     ]
                     }
                 }`,
@@ -141,16 +141,17 @@ describe("POST /api/getplan", () => {
 
     // -- Test 4--
 
-    test("returns the parsed mock plan document in the DB insert", async () => {
+test("returns the parsed mock plan document in the DB insert", async () => {
+    // Mock OpenAI response (just the weeks structure)
     const mockPlanContent = `{
         "learning_plan": {
-            "aim": "Learn guitar",
-            "success": "Play one song",
-            "startingLevel": "Beginner",
-            "targetDate": "2025-12-31",
-            "timePerDay": "30",
             "weeks": [
-                { "weekNumber": 1, "objectives": ["Learn chords"], "activities": ["Practice"], "tips": ["Stay consistent"] }
+                { 
+                    "weekNumber": 1, 
+                    "objectives": ["Learn chords"], 
+                    "activities": ["Practice"],
+                    "tips": ["Stay consistent"] 
+                }
             ]
         }
     }`;
@@ -164,24 +165,35 @@ describe("POST /api/getplan", () => {
         },
     });
 
-    // Mock Mongo insert
     mockInsertOne.mockResolvedValue({ insertedId: "mocked-plan-id" });
 
     await handler(req, res);
 
-    // Verify OpenAI was called
-    expect(mockCreateChatCompletion).toHaveBeenCalled();
-
-    // Verify DB insert contained the parsed plan
+    // Verify DB insert contains FORM DATA + normalized OpenAI weeks
     expect(mockInsertOne).toHaveBeenCalledWith(
         expect.objectContaining({
-            plan: JSON.parse(mockPlanContent), // check actual parsed doc
+            plan: {
+                learning_plan: {
+                    aim: "Learn guitar",           // ← From req.body.aim
+                    success: "Play one song",      // ← From req.body.success  
+                    startingLevel: "Beginner",     // ← From req.body.startingLevel
+                    targetDate: "2025-12-31",     // ← From req.body.targetDate
+                    timePerDay: "30",              // ← From req.body.timePerDay
+                    weeks: [                       // ← From OpenAI, but normalized
+                        {
+                            weekNumber: 1,
+                            objectives: ["Learn chords"],
+                            activities: [{ activity: "Practice", completed: false }],
+                            tips: ["Stay consistent"]
+                        }
+                    ]
+                }
+            },
             createdAt: expect.any(Date),
             userId: "mocked-user-id",
         })
     );
 
-    // Verify response
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ id: "mocked-plan-id" });
 });

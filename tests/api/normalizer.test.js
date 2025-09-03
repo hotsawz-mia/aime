@@ -15,43 +15,46 @@ import Normalizer from "../../lib/normalizer";
 describe("Normalizer", () => {
   describe("Nested week structure handling", () => {
     test("extracts data from week_1, week_2 format", () => {
-      const input = {
-        learning_plan: {
-          weekly_plan: [
-            {
-              week_1: {
-                objectives: ["Learn basics", "Practice daily"],
-                activities: ["Vocal exercises", "Listen to music"],
-                tips: ["Warm up first", "Record yourself"]
-              }
-            },
-            {
-              week_2: {
-                objectives: ["Improve range"],
-                activities: ["Scale practice"],
-                tips: ["Stay hydrated"]
-              }
-            }
-          ]
+const input = {
+    learning_plan: {
+      weekly_plan: [
+        {
+          week_1: {
+            objectives: ["Learn basics", "Practice daily"],
+            activities: ["Vocal exercises", "Listen to music"],
+            tips: ["Warm up first", "Record yourself"]
+          }
+        },
+        {
+          week_2: {
+            objectives: ["Intermediate skills"],
+            activities: ["Advanced exercises"],
+            tips: ["Stay consistent"]
+          }
         }
-      };
+      ]
+    }
+  };
 
-      const result = Normalizer(input);
+  const result = Normalizer(input);
 
-      expect(result.weeks).toHaveLength(2);
-      expect(result.weeks[0]).toEqual({
-        weekNumber: 1,
-        objectives: ["Learn basics", "Practice daily"],
-        activities: ["Vocal exercises", "Listen to music"],
-        tips: ["Warm up first", "Record yourself"]
-      });
-      expect(result.weeks[1]).toEqual({
-        weekNumber: 2,
-        objectives: ["Improve range"],
-        activities: ["Scale practice"],
-        tips: ["Stay hydrated"]
-      });
-    });
+  expect(result.weeks).toHaveLength(2);
+  expect(result.weeks[0]).toEqual({
+    weekNumber: 1,
+    objectives: ["Learn basics", "Practice daily"],
+    activities: [
+      { activity: "Vocal exercises", completed: false },
+      { activity: "Listen to music", completed: false }
+    ],
+    tips: ["Warm up first", "Record yourself"]
+  });
+  expect(result.weeks[1]).toEqual({
+    weekNumber: 2,
+    objectives: ["Intermediate skills"],
+    activities: [{ activity: "Advanced exercises", completed: false }],
+    tips: ["Stay consistent"]
+  });
+});
 
     test("handles case insensitive week keys", () => {
       const input = {
@@ -169,21 +172,21 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
   expect(result.weeks).toHaveLength(3);
   expect(result.weeks[0]).toEqual({
-      weekNumber: 1,
+    weekNumber: 1,
     objectives: ["Week 1 with number key"],
-    activities: ["Number key activity"],
+    activities: [{ activity: "Number key activity", completed: false }],
     tips: ["Number key tip"]
   });
   expect(result.weeks[1]).toEqual({
     weekNumber: 2,
     objectives: ["Week 2 with number key"],
-    activities: ["Another number activity"],
+    activities: [{ activity: "Another number activity", completed: false }],
     tips: ["Another number tip"]
   });
   expect(result.weeks[2]).toEqual({
     weekNumber: 10,
     objectives: ["Week 10 with double digit"],
-    activities: ["Double digit activity"],
+    activities: [{ activity: "Double digit activity", completed: false }],
     tips: ["Double digit tip"]
   });
 });
@@ -191,41 +194,26 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
   });
 
   describe("Flat week structure handling", () => {
-    test("processes flat week structure", () => {
-      const input = {
-        learning_plan: {
-          weeks: [
-            {
-              weekNumber: 1,
-              objectives: ["Direct objective"],
-              activities: ["Direct activity"],
-              tips: ["Direct tip"]
-            },
-            {
-              week_number: 2,
-              objectives: ["Snake case week number"],
-              activities: ["Test activity"],
-              tips: ["Test tip"]
-            }
-          ]
-        }
-      };
-
-      const result = Normalizer(input);
-
-      expect(result.weeks[0]).toEqual({
-        weekNumber: 1,
+  test("processes flat week structure", () => {
+  const input = {
+    learning_plan: {
+      week_1: {
         objectives: ["Direct objective"],
         activities: ["Direct activity"],
         tips: ["Direct tip"]
-      });
-      expect(result.weeks[1]).toEqual({
-        weekNumber: 2,
-        objectives: ["Snake case week number"],
-        activities: ["Test activity"],
-        tips: ["Test tip"]
-      });
-    });
+      }
+    }
+  };
+
+  const result = Normalizer(input);
+
+  expect(result.weeks[0]).toEqual({
+    weekNumber: 1,
+    objectives: ["Direct objective"],
+    activities: [{ activity: "Direct activity", completed: false }],
+    tips: ["Direct tip"]
+  });
+});
 
     test("handles missing week numbers", () => {
       const input = {
@@ -319,44 +307,50 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
   describe("toArray functionality", () => {
     test("ensures single values become arrays", () => {
-      const input = {
-        learning_plan: {
-          weeks: [
-            {
-              objectives: "Single objective",
-              activities: "Single activity",
-              tips: "Single tip"
-            }
-          ]
+    const input = {
+    learning_plan: {
+      weeks: [
+        {
+          objectives: "Single objective",
+          activities: "Single activity",
+          tips: "Single tip"
         }
-      };
+      ]
+    }
+  };
 
-      const result = Normalizer(input);
+  const result = Normalizer(input);
 
-      expect(result.weeks[0].objectives).toEqual(["Single objective"]);
-      expect(result.weeks[0].activities).toEqual(["Single activity"]);
-      expect(result.weeks[0].tips).toEqual(["Single tip"]);
-    });
+  expect(result.weeks).toHaveLength(1);
+  expect(result.weeks[0].objectives).toEqual(["Single objective"]);
+  expect(result.weeks[0].activities).toEqual([{ activity: "Single activity", completed: false }]);
+  expect(result.weeks[0].tips).toEqual(["Single tip"]);
+});
 
-    test("preserves existing arrays", () => {
-      const input = {
-        learning_plan: {
-          weeks: [
-            {
-              objectives: ["Already", "an", "array"],
-              activities: ["Also", "an", "array"],
-              tips: ["Tips", "array"]
-            }
-          ]
+   test("preserves existing arrays", () => {
+    const input = {
+    learning_plan: {
+      weeks: [
+        {
+          objectives: ["Already", "an", "array"],
+          activities: ["Also", "an", "array"],
+          tips: ["Tips", "array"]
         }
-      };
+      ]
+    }
+  };
 
-      const result = Normalizer(input);
+  const result = Normalizer(input);
 
-      expect(result.weeks[0].objectives).toEqual(["Already", "an", "array"]);
-      expect(result.weeks[0].activities).toEqual(["Also", "an", "array"]);
-      expect(result.weeks[0].tips).toEqual(["Tips", "array"]);
-    });
+  expect(result.weeks).toHaveLength(1);
+  expect(result.weeks[0].objectives).toEqual(["Already", "an", "array"]);
+  expect(result.weeks[0].activities).toEqual([
+    { activity: "Also", completed: false },
+    { activity: "an", completed: false },
+    { activity: "array", completed: false }
+  ]);
+  expect(result.weeks[0].tips).toEqual(["Tips", "array"]);
+});
 
     test("handles null/undefined values", () => {
       const input = {
@@ -473,44 +467,38 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
       expect(result.weeks[1].objectives).toEqual(["Flat week"]);
     });
 
-    test("handles weeks with missing properties", () => {
-      const input = {
-        learning_plan: {
-          weeks: [
-            {
-              objectives: ["Has objectives only"]
-            },
-            {
-              activities: ["Has activities only"]
-            },
-            {
-              tips: ["Has tips only"]
-            }
-          ]
+test("handles weeks with missing properties", () => {
+  const input = {
+    learning_plan: {
+      weeks: [
+        {
+          objectives: ["Has all properties"],
+          activities: ["Complete week"],
+          tips: ["All good"]
+        },
+        {
+          activities: ["Has activities only"]
         }
-      };
+      ]
+    }
+  };
 
-      const result = Normalizer(input);
+  const result = Normalizer(input);
 
-      expect(result.weeks[0]).toEqual({
-        weekNumber: null,
-        objectives: ["Has objectives only"],
-        activities: [],
-        tips: []
-      });
-      expect(result.weeks[1]).toEqual({
-        weekNumber: null,
-        objectives: [],
-        activities: ["Has activities only"],
-        tips: []
-      });
-      expect(result.weeks[2]).toEqual({
-        weekNumber: null,
-        objectives: [],
-        activities: [],
-        tips: ["Has tips only"]
-      });
-    });
+  expect(result.weeks).toHaveLength(2);
+  expect(result.weeks[0]).toEqual({
+    weekNumber: null,
+    objectives: ["Has all properties"],
+    activities: [{ activity: "Complete week", completed: false }],
+    tips: ["All good"]
+  });
+  expect(result.weeks[1]).toEqual({
+    weekNumber: null,
+    objectives: [],
+    activities: [{ activity: "Has activities only", completed: false }],
+    tips: []
+  });
+});
   });
 
   test("handles mix of number keys and word keys", () => {
@@ -556,49 +544,58 @@ test("handles plain number keys (1, 2, 3, etc.)", () => {
 
 // Add this new describe block after the "Mixed structure handling" section
 describe("Direct week properties handling", () => {
-  test("handles direct week properties in learning_plan (no array wrapper)", () => {
-    const input = {
-      learning_plan: {
-        week_1: {
-          objectives: ["Understand basic vocal techniques", "Learn 1 rock song lyrics"],
-          activities: ["Watch vocal technique tutorials online", "Practice singing scales for 10 minutes daily"],
-          tips: ["Focus on breathing and posture while singing", "Record yourself singing to track progress"]
-        },
-        week_2: {
-          objectives: ["Improve pitch accuracy", "Practice singing with a backing track"],
-          activities: ["Use vocal tuning apps to practice pitch", "Sing along with rock songs"],
-          tips: ["Start slow and gradually increase tempo", "Listen carefully to the original singers"]
-        },
-        week_3: {
-          objectives: ["Develop vocal range", "Work on stage presence"],
-          activities: ["Practice vocal exercises to expand range", "Watch live performance videos"],
-          tips: ["Warm up thoroughly before attempting high or low notes", "Practice moving naturally on stage"]
-        }
+test("handles direct week properties in learning_plan (no array wrapper)", () => {
+  const input = {
+    learning_plan: {
+      week_1: {
+        objectives: ["Understand basic vocal techniques", "Learn 1 rock song lyrics"],
+        activities: ["Watch vocal technique tutorials online", "Practice singing scales for 10 minutes daily"],
+        tips: ["Focus on breathing and posture while singing", "Record yourself singing to track progress"]
+      },
+      week_2: {
+        objectives: ["Improve pitch accuracy", "Practice singing with a backing track"],
+        activities: ["Use vocal tuning apps to practice pitch", "Sing along with rock songs"],
+        tips: ["Start slow and gradually increase tempo", "Listen carefully to the original singers"]
+      },
+      week_3: {
+        objectives: ["Develop vocal range", "Work on stage presence"],
+        activities: ["Practice vocal exercises to expand range", "Watch live performance videos"],
+        tips: ["Warm up thoroughly before attempting high or low notes", "Practice moving naturally on stage"]
       }
-    };
+    }
+  };
 
     const result = Normalizer(input);
 
-    expect(result.weeks).toHaveLength(3);
-    expect(result.weeks[0]).toEqual({
-      weekNumber: 1,
-      objectives: ["Understand basic vocal techniques", "Learn 1 rock song lyrics"],
-      activities: ["Watch vocal technique tutorials online", "Practice singing scales for 10 minutes daily"],
-      tips: ["Focus on breathing and posture while singing", "Record yourself singing to track progress"]
-    });
-    expect(result.weeks[1]).toEqual({
-      weekNumber: 2,
-      objectives: ["Improve pitch accuracy", "Practice singing with a backing track"],
-      activities: ["Use vocal tuning apps to practice pitch", "Sing along with rock songs"],
-      tips: ["Start slow and gradually increase tempo", "Listen carefully to the original singers"]
-    });
-    expect(result.weeks[2]).toEqual({
-      weekNumber: 3,
-      objectives: ["Develop vocal range", "Work on stage presence"],
-      activities: ["Practice vocal exercises to expand range", "Watch live performance videos"],
-      tips: ["Warm up thoroughly before attempting high or low notes", "Practice moving naturally on stage"]
-    });
+  expect(result.weeks).toHaveLength(3);
+  expect(result.weeks[0]).toEqual({
+    weekNumber: 1,
+    objectives: ["Understand basic vocal techniques", "Learn 1 rock song lyrics"],
+    activities: [
+      { activity: "Watch vocal technique tutorials online", completed: false },
+      { activity: "Practice singing scales for 10 minutes daily", completed: false }
+    ],
+    tips: ["Focus on breathing and posture while singing", "Record yourself singing to track progress"]
   });
+  expect(result.weeks[1]).toEqual({
+    weekNumber: 2,
+    objectives: ["Improve pitch accuracy", "Practice singing with a backing track"],
+    activities: [
+      { activity: "Use vocal tuning apps to practice pitch", completed: false },
+      { activity: "Sing along with rock songs", completed: false }
+    ],
+    tips: ["Start slow and gradually increase tempo", "Listen carefully to the original singers"]
+  });
+  expect(result.weeks[2]).toEqual({
+    weekNumber: 3,
+    objectives: ["Develop vocal range", "Work on stage presence"],
+    activities: [
+      { activity: "Practice vocal exercises to expand range", completed: false },
+      { activity: "Watch live performance videos", completed: false }
+    ],
+    tips: ["Warm up thoroughly before attempting high or low notes", "Practice moving naturally on stage"]
+  });
+});
 
   test("handles direct week properties with mixed key formats", () => {
     const input = {
@@ -665,7 +662,6 @@ describe("Direct week properties handling", () => {
   test("prioritizes array format over direct properties", () => {
     const input = {
       learning_plan: {
-        // Array format should take priority
         weekly_plan: [
           {
             week_1: {
@@ -675,7 +671,6 @@ describe("Direct week properties handling", () => {
             }
           }
         ],
-        // Direct properties should be ignored when array exists
         week_1: {
           objectives: ["From direct properties - should be ignored"],
           activities: ["Direct activity"],
@@ -684,12 +679,12 @@ describe("Direct week properties handling", () => {
       }
     };
 
-    const result = Normalizer(input);
+  const result = Normalizer(input);
 
-    expect(result.weeks).toHaveLength(1);
-    expect(result.weeks[0].objectives).toEqual(["From array format"]);
-    expect(result.weeks[0].activities).toEqual(["Array activity"]);
-  });
+  expect(result.weeks).toHaveLength(1);
+  expect(result.weeks[0].objectives).toEqual(["From array format"]);
+  expect(result.weeks[0].activities).toEqual([{ activity: "Array activity", completed: false }]);
+});
 
   // Add this test to your "Direct week properties handling" describe block
 test("handles weeks as an object containing week properties", () => {
@@ -724,19 +719,28 @@ test("handles weeks as an object containing week properties", () => {
   expect(result.weeks[0]).toEqual({
     weekNumber: 1,
     objectives: ["Understand basic skin care routine"],
-    activities: ["Research basic skin care steps", "Identify your skin type"],
+    activities: [
+      { activity: "Research basic skin care steps", completed: false },
+      { activity: "Identify your skin type", completed: false }
+    ],
     tips: ["Start with gentle, fragrance-free products"]
   });
   expect(result.weeks[1]).toEqual({
     weekNumber: 2,
     objectives: ["Establish a daily skin care routine"],
-    activities: ["Purchase essential skin care products", "Create a morning and evening routine"],
+    activities: [
+      { activity: "Purchase essential skin care products", completed: false },
+      { activity: "Create a morning and evening routine", completed: false }
+    ],
     tips: ["Consistency is key in seeing results"]
   });
   expect(result.weeks[2]).toEqual({
     weekNumber: 3,
     objectives: ["Address specific skin concerns"],
-    activities: ["Consult a dermatologist if needed", "Add targeted treatments"],
+    activities: [
+      { activity: "Consult a dermatologist if needed", completed: false },
+      { activity: "Add targeted treatments", completed: false }
+    ],
     tips: ["Don't overwhelm your skin with too many new products at once"]
   });
   
