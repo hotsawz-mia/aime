@@ -1,0 +1,19 @@
+const mockClient = {
+  db: jest.fn(() => ({
+    collection: jest.fn(() => ({
+      find: jest.fn(() => ({
+        project: jest.fn(() => ({
+          sort: jest.fn(() => ({
+            toArray: jest.fn(() => Promise.resolve([]))
+          }))
+        }))
+      })),
+      insertOne: jest.fn(() => Promise.resolve({ insertedId: 'mock_id' })),
+      updateOne: jest.fn(() => Promise.resolve({ modifiedCount: 1 })),
+      deleteOne: jest.fn(() => Promise.resolve({ deletedCount: 1 })),
+      findOne: jest.fn(() => Promise.resolve(null))
+    }))
+  }))
+};
+
+export default Promise.resolve(mockClient);
