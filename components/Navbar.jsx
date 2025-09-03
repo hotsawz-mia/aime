@@ -4,13 +4,13 @@ import { SignOutButton } from "@clerk/nextjs";
 
 export default function Navbar() {
   return (
-    <div className="navbar bg-base-100 shadow-sm sticky top-0 z-50">
+    <div data-theme="synthwave" className="navbar bg-base-content shadow-lg sticky top-0 z-50">
       {/* Left: dropdown */}
       <div className="navbar-start">
         <div className="dropdown">
           <button
             tabIndex={0}
-            className="btn btn-ghost btn-circle"
+            className="btn btn-circle"
             aria-label="Open menu"
           >
             {/* hamburger */}
@@ -34,12 +34,12 @@ export default function Navbar() {
 
       {/* Center: title (not a button) */}
       <div className="navbar-center">
-        <span className="text-xl font-semibold select-none">AiMe</span>
+        <span className="inline-block rounded-lg bg-success text-base-100 px-3 py-1 text-xl font-bold select-none">AiMe</span>
       </div>
 
       {/* Right: home icon + sign out */}
       <div className="navbar-end gap-2">
-        <Link href="/" className="btn btn-ghost btn-circle" aria-label="Go to homepage">
+        <Link href="/" className="btn btn-circle" aria-label="Go to homepage">
           {/* home icon */}
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l9-7 9 7v8a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-8z" />
@@ -47,7 +47,7 @@ export default function Navbar() {
         </Link>
 
         <SignOutButton>
-          <button className="btn btn-primary btn-sm">
+          <button className="btn btn-error content btn-sm">
             Sign Out
           </button>
         </SignOutButton>
