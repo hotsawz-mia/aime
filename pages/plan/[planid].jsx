@@ -140,7 +140,12 @@ const Plan = () => {
                 <span className="font-extrabold">{week.weekNumber}</span>
               </summary>
 
+
+
+           
+
               <div className="collapse-content space-y-4 w-full max-w-full">
+
 
                 {/* Objectives */}
                 {Array.isArray(week.objectives) && week.objectives.length > 0 && (
@@ -158,7 +163,6 @@ const Plan = () => {
                     </ul>
                   </div>
                 )}
-
                 {/* Activities as checkbox list */}
 
                 {Array.isArray(week.activities) && week.activities.length > 0 && (
@@ -187,6 +191,15 @@ const Plan = () => {
                           key={idx}
                           className="label cursor-pointer justify-start items-start gap-3 p-0 w-full flex-wrap min-w-0"
                         >
+
+//                           <input
+//                             type="checkbox"
+//                             className="checkbox checkbox-success"
+//                             checked={!!act.completed}
+//                             onChange={(e) => toggleActivity(week.weekNumber, idx, e.target.checked)}
+//                           />
+//                           <span className="label-text" >{act.activity}</span>
+
                           <input 
                             type="checkbox" 
                             className="checkbox checkbox-success mt-1"
@@ -197,6 +210,7 @@ const Plan = () => {
                           <span className="label-text flex-1 min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto">
                             {act.activity}
                           </span>
+
 
                         </label>
                       ))}
