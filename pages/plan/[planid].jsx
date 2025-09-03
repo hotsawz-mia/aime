@@ -130,9 +130,15 @@ const Plan = () => {
                           key={idx}
                           className="label cursor-pointer justify-start items-start gap-3 p-0 w-full flex-wrap min-w-0"
                         >
-                          <input type="checkbox" className="checkbox checkbox-success mt-1" />
+                          <input 
+                            type="checkbox" 
+                            className="checkbox checkbox-success mt-1"
+                            defaultChecked={!!act.completed}
+                            value={act.activity}
+                            aria-label={act.activity}
+                          />
                           <span className="label-text flex-1 min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto">
-                            {act}
+                            {act.activity}
                           </span>
                         </label>
                       ))}
