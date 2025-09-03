@@ -21,8 +21,6 @@ function MyApp({ Component, pageProps }) {
     segs.length === 2 &&
     segs[0] === 'plan' &&
     /^[0-9a-fA-F]{24}$/.test(segs[1]); // Mongo ObjectId
-
-
   const shouldShowNavbar = !isAuthPage && (isHome || isForm || isPlan);
 
   return (
@@ -36,4 +34,3 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp
-
