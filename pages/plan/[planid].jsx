@@ -37,13 +37,67 @@ const Plan = () => {
   if (!learning_plan) return <p>No learning plan found.</p>;
 
 
+
+  const weeksArray = data.plan.learning_plan.weeks;
+
+  const totalActivities = weeksArray.reduce((count, week) => 
+    count+week.activities.length, 0 
+  );
+  const totalCompleted = weeksArray.reduce((count, week) =>
+    count + week.activities.filter(activity => activity.completed).length, 0
+  );
+  console.log(totalActivities);
+  console.log(totalCompleted);
+
+  const percentageCompleted = totalCompleted / totalActivities * 100;
+  console.log(percentageCompleted);
+
+
+  // const toggleActivity = (weekNumber, activityIndex) => { 
+  //   setData(
+  //     prevData => { 
+  //      const newData = JSON.parse(JSON.stringify(prevData)); 
+  //      const week = newData.plan.learning_plan.weeks.find(w => w.weekNumber === weekNumber); 
+  //      const activity = week.activities[activityIndex]; 
+  //      activity.completed = !activity.completed; 
+  //      console.log("Toggled activity:", activity); 
+  //      fetch('/api/activitystatus', { 
+  //        method: 'PATCH', 
+  //        headers: { 'Content-Type': 'application/json' }, 
+  //        body: JSON.stringify(newData.plan) 
+  //      });
+  //      return newData;
+  //     }
+  //   ); 
+  // };
+
+  const toggleActivity = (weekNumber, activityIndex, nextChecked) => {
+    setData(prev => {
+      const newData = JSON.parse(JSON.stringify(prev));
+      const week = newData.plan.learning_plan.weeks.find(w => w.weekNumber === weekNumber);
+      const activity = week.activities[activityIndex];
+      activity.completed = !!nextChecked;
+      return newData;
+    });
+        fetch('/api/activitystatus', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // send Clerk cookies
+      body: JSON.stringify({
+        planId: planid,
+        checkboxId: `${weekNumber}-${activityIndex}`,
+        isChecked: !!nextChecked,
+      }),
+    }).catch(err => console.error('activitystatus failed', err));
+  };
+
   return (
     <div data-theme="synthwave" className="min-h-screen bg-base-200">
       <main className="mx-auto w-full max-w-3xl p-6 md:p-10 space-y-6">
         {/* Header card */}
         <div className="card bg-base-100/80 backdrop-blur shadow-xl">
           <div className="card-body">
-            <h1 className="card-title text-3xl text-secondary">
+            <h1 className="card-title text-secondary font-bebas peachNeon text-5xl mt-4 mb-8 uppercase">
               {learning_plan.aim}
             </h1>
 
@@ -69,23 +123,25 @@ const Plan = () => {
         </div>
 
         {/* Weeks accordion — highlight whichever is open */}
+        <progress className="progress progress-success w-95" value={percentageCompleted} max="100"></progress>
         <section className="space-y-3">
           {learning_plan.weeks.map((week) => (
             <details
               key={week.weekNumber}
                 className="collapse collapse-arrow bg-base-100/70 backdrop-blur shadow transition-all duration-200
-+                          open:bg-neutral/10 open:ring-2 open:ring-neutral"
+                          open:bg-neutral/10 open:ring-2 open:ring-neutral"
               open={week.weekNumber === 1} // Week 1 shown by default
             >
               <summary
                 className="collapse-title text-xl font-bold select-none
-+                          text-secondary open:text-neutral"
+                          text-secondary open:text-neutral"
               >
                 <span className="opacity-85">Week</span>{" "}
                 <span className="font-extrabold">{week.weekNumber}</span>
               </summary>
 
               <div className="collapse-content space-y-4 w-full max-w-full">
+
                 {/* Objectives */}
                 {Array.isArray(week.objectives) && week.objectives.length > 0 && (
                   <div className="w-full">
@@ -103,7 +159,8 @@ const Plan = () => {
                   </div>
                 )}
 
-                {/* Activities as checkbox list
+                {/* Activities as checkbox list */}
+
                 {Array.isArray(week.activities) && week.activities.length > 0 && (
                   <div>
                     <p className="text-lg font-semibold text-success">Activities</p>
@@ -140,6 +197,7 @@ const Plan = () => {
                           <span className="label-text flex-1 min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto">
                             {act.activity}
                           </span>
+
                         </label>
                       ))}
                     </div>
