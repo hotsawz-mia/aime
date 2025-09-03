@@ -4,7 +4,7 @@ import '../styles/globals.css'
 function MyApp({ Component, pageProps }) {
   return (
     <ClerkProvider>
-      <div data-theme="nord">
+      <div data-theme="synthwave">
         <Component {...pageProps} />
       </div>
     </ClerkProvider>

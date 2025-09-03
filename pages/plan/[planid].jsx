@@ -53,22 +53,42 @@ const Plan = () => {
   console.log(percentageCompleted);
 
 
-  const toggleActivity = (weekNumber, activityIndex) => { 
-    setData(
-      prevData => { 
-       const newData = JSON.parse(JSON.stringify(prevData)); 
-       const week = newData.plan.learning_plan.weeks.find(w => w.weekNumber === weekNumber); 
-       const activity = week.activities[activityIndex]; 
-       activity.completed = !activity.completed; 
-       console.log("Toggled activity:", activity); 
-       fetch('/api/saveprogress', { 
-         method: 'POST', 
-         headers: { 'Content-Type': 'application/json' }, 
-         body: JSON.stringify(newData.plan) 
-       });
-       return newData;
-      }
-    ); 
+  // const toggleActivity = (weekNumber, activityIndex) => { 
+  //   setData(
+  //     prevData => { 
+  //      const newData = JSON.parse(JSON.stringify(prevData)); 
+  //      const week = newData.plan.learning_plan.weeks.find(w => w.weekNumber === weekNumber); 
+  //      const activity = week.activities[activityIndex]; 
+  //      activity.completed = !activity.completed; 
+  //      console.log("Toggled activity:", activity); 
+  //      fetch('/api/activitystatus', { 
+  //        method: 'PATCH', 
+  //        headers: { 'Content-Type': 'application/json' }, 
+  //        body: JSON.stringify(newData.plan) 
+  //      });
+  //      return newData;
+  //     }
+  //   ); 
+  // };
+
+  const toggleActivity = (weekNumber, activityIndex, nextChecked) => {
+    setData(prev => {
+      const newData = JSON.parse(JSON.stringify(prev));
+      const week = newData.plan.learning_plan.weeks.find(w => w.weekNumber === weekNumber);
+      const activity = week.activities[activityIndex];
+      activity.completed = !!nextChecked;
+      return newData;
+    });
+        fetch('/api/activitystatus', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include', // send Clerk cookies
+      body: JSON.stringify({
+        planId: planid,
+        checkboxId: `${weekNumber}-${activityIndex}`,
+        isChecked: !!nextChecked,
+      }),
+    }).catch(err => console.error('activitystatus failed', err));
   };
 
   return (
@@ -77,7 +97,7 @@ const Plan = () => {
         {/* Header card */}
         <div className="card bg-base-100/80 backdrop-blur shadow-xl">
           <div className="card-body">
-            <h1 className="card-title text-3xl text-secondary">
+            <h1 className="card-title text-secondary font-bebas peachNeon text-5xl mt-4 mb-8 uppercase">
               {learning_plan.aim}
             </h1>
 
@@ -143,9 +163,11 @@ const Plan = () => {
                           key={idx}
                           className="label cursor-pointer justify-start gap-3 p-0"
                         >
-                          <input 
-                            type="checkbox" className="checkbox checkbox-success" 
-                            onChange={() => toggleActivity(week.weekNumber, idx)}
+                          <input
+                            type="checkbox"
+                            className="checkbox checkbox-success"
+                            checked={!!act.completed}
+                            onChange={(e) => toggleActivity(week.weekNumber, idx, e.target.checked)}
                           />
                           <span className="label-text" >{act.activity}</span>
                         </label>

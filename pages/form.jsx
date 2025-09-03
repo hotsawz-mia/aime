@@ -75,6 +75,7 @@ export default function AimePlannerForm() {
   return (
     <div className="min-h-screen bg-base-200">
       <main className="mx-auto w-full max-w-2xl p-6 md:p-10">
+      <h1 className="font-bebas pinkNeon-border pinkNeon-outline text-8xl mt-4 mb-8">AI.ME</h1>
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* What’s your Aime? */}
           <div className="form-control">
