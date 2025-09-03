@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-// see this version of my endpoint:  /api/activitystatus
-
-=======
->>>>>>> origin/main
 import clientPromise from "../../lib/mongodb";
 import { getAuth } from "@clerk/nextjs/server";
 import { ObjectId } from "mongodb";
