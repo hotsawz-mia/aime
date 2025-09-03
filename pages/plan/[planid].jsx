@@ -123,7 +123,7 @@ const Plan = () => {
         </div>
 
         {/* Weeks accordion — highlight whichever is open */}
-        <progress className="progress progress-success w-95" value={percentageCompleted} max="100"></progress>
+        <progress className="progress progress-success w-full" value={percentageCompleted} max="100"></progress>
         <section className="space-y-3">
           {learning_plan.weeks.map((week) => (
             <details
