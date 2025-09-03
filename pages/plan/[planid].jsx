@@ -33,8 +33,8 @@ const Plan = () => {
 
   // const plan = normalizePlan(data.plan);
   // if (!plan) return <p>No learning plan found.</p>;
-  const { learningPlan } = data.plan;
-  if (!learningPlan) return <p>No learning plan found.</p>;
+  const { learning_plan } = data.plan;
+  if (!learning_plan) return <p>No learning plan found.</p>;
 
 
   return (
@@ -44,25 +44,25 @@ const Plan = () => {
         <div className="card bg-base-100/80 backdrop-blur shadow-xl">
           <div className="card-body">
             <h1 className="card-title text-3xl text-secondary">
-              {learningPlan.aim}
+              {learning_plan.aim}
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <p className="text-lg">
                 <strong className="text-accent">Success Looks Like:</strong>{" "}
-                {learningPlan.success}
+                {learning_plan.success}
               </p>
               <p className="text-lg">
                 <strong className="text-info">Starting Level:</strong>{" "}
-                {learningPlan.startingLevel}
+                {learning_plan.startingLevel}
               </p>
               <p className="text-lg">
                 <strong className="text-warning">Target Date:</strong>{" "}
-                {learningPlan.targetDate}
+                {learning_plan.targetDate}
               </p>
               <p className="text-lg">
                 <strong className="text-primary">Time / Day:</strong>{" "}
-                {learningPlan.timePerDay} mins
+                {learning_plan.timePerDay} mins
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ const Plan = () => {
 
         {/* Weeks accordion — highlight whichever is open */}
         <section className="space-y-3">
-          {learningPlan.weeks.map((week) => (
+          {learning_plan.weeks.map((week) => (
             <details
               key={week.weekNumber}
                 className="collapse collapse-arrow bg-base-100/70 backdrop-blur shadow transition-all duration-200
