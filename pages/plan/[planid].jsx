@@ -109,7 +109,7 @@ const Plan = () => {
                           className="label cursor-pointer justify-start gap-3 p-0"
                         >
                           <input type="checkbox" className="checkbox checkbox-success" />
-                          <span className="label-text">{act}</span>
+                          <span className="label-text">{act.activity}</span>
                         </label>
                       ))}
                     </div>
