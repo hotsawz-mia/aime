@@ -14,12 +14,19 @@ const byNormalizedText = (text) => (_, node) =>
 
 
 // example db entry taken directly from successful form submit to db
+// Update the WEEKS array to use the new activity structure
 const WEEKS = [
   {
     objectives: ['Learn basic Spanish greetings', 'Learn basic vocabulary words'],
     activities: [
-      'Practice greetings with flashcards for 10 minutes daily',
-      'Learn 5 new vocabulary words daily',
+      {
+        activity: 'Practice greetings with flashcards for 10 minutes daily',
+        completed: false
+      },
+      {
+        activity: 'Learn 5 new vocabulary words daily',
+        completed: false
+      }
     ],
     tips: [
       'Use language learning apps like Duolingo or Babbel',
@@ -30,8 +37,14 @@ const WEEKS = [
   {
     objectives: ['Practice forming simple sentences', 'Learn common phrases for everyday conversations'],
     activities: [
-      'Practice sentence structure with basic exercises',
-      'Role-play common daily scenarios in Spanish',
+      {
+        activity: 'Practice sentence structure with basic exercises',
+        completed: false
+      },
+      {
+        activity: 'Role-play common daily scenarios in Spanish',
+        completed: false
+      }
     ],
     tips: [
       'Practice speaking out loud to improve pronunciation',
@@ -42,8 +55,14 @@ const WEEKS = [
   {
     objectives: ['Expand vocabulary related to daily activities', 'Understand basic verb conjugation'],
     activities: [
-      'Learn action verbs and their conjugations',
-      'Practice describing your daily routine in Spanish',
+      {
+        activity: 'Learn action verbs and their conjugations',
+        completed: false
+      },
+      {
+        activity: 'Practice describing your daily routine in Spanish',
+        completed: false
+      }
     ],
     tips: [
       'Create flashcards to memorize verb conjugations',
@@ -53,8 +72,14 @@ const WEEKS = [
   },
   {
     activities: [
-      'Role-play asking and answering common questions',
-      'Practice short dialogues with a language partner',
+      {
+        activity: 'Role-play asking and answering common questions',
+        completed: false
+      },
+      {
+        activity: 'Practice short dialogues with a language partner',
+        completed: false
+      }
     ],
     tips: [
       'Focus on improving fluency by speaking spontaneously',
@@ -65,8 +90,14 @@ const WEEKS = [
   },
   {
     activities: [
-      'Listen to Spanish podcasts or news programs daily',
-      'Practice giving and following directions in Spanish',
+      {
+        activity: 'Listen to Spanish podcasts or news programs daily',
+        completed: false
+      },
+      {
+        activity: 'Practice giving and following directions in Spanish',
+        completed: false
+      }
     ],
     tips: [
       'Repeat listening exercises to improve comprehension',
@@ -77,8 +108,14 @@ const WEEKS = [
   },
   {
     activities: [
-      'Memorize food-related vocabulary',
-      'Practice ordering food in Spanish at a local restaurant',
+      {
+        activity: 'Memorize food-related vocabulary',
+        completed: false
+      },
+      {
+        activity: 'Practice ordering food in Spanish at a local restaurant',
+        completed: false
+      }
     ],
     tips: [
       'Practice role-playing restaurant scenarios',
@@ -91,7 +128,16 @@ const WEEKS = [
     ],
   },
   {
-    activities: ['Create sentences discussing hobbies and interests', 'Practice narrating past events in Spanish'],
+    activities: [
+      {
+        activity: 'Create sentences discussing hobbies and interests',
+        completed: false
+      },
+      {
+        activity: 'Practice narrating past events in Spanish',
+        completed: false
+      }
+    ],
     tips: [
       'Join Spanish language workshops or clubs to discuss hobbies',
       'Read short stories in Spanish to practice past tense',
@@ -100,7 +146,16 @@ const WEEKS = [
     objectives: ['Focus on discussing hobbies and interests', 'Learn to talk about past experiences in Spanish'],
   },
   {
-    activities: ['Discuss future plans with a language partner', 'Practice expressing opinions on various topics'],
+    activities: [
+      {
+        activity: 'Discuss future plans with a language partner',
+        completed: false
+      },
+      {
+        activity: 'Practice expressing opinions on various topics',
+        completed: false
+      }
+    ],
     tips: [
       'Debate current events or topics with a language partner',
       'Use language exchange apps to practice expressing emotions',
@@ -109,7 +164,16 @@ const WEEKS = [
     objectives: ['Practice talking about future plans and aspirations', 'Learn to express opinions and feelings in Spanish'],
   },
   {
-    activities: ['Read short articles or stories in Spanish', 'Write about your daily experiences in Spanish'],
+    activities: [
+      {
+        activity: 'Read short articles or stories in Spanish',
+        completed: false
+      },
+      {
+        activity: 'Write about your daily experiences in Spanish',
+        completed: false
+      }
+    ],
     tips: [
       "Summarize what you've read in Spanish to check comprehension",
       'Join online writing communities to get feedback on your writing',
@@ -118,7 +182,16 @@ const WEEKS = [
     objectives: ['Focus on improving reading comprehension', 'Learn to write short paragraphs in Spanish'],
   },
   {
-    activities: ['Engage in longer conversations with native Spanish speakers', 'Practice speaking on various topics for extended periods'],
+    activities: [
+      {
+        activity: 'Engage in longer conversations with native Spanish speakers',
+        completed: false
+      },
+      {
+        activity: 'Practice speaking on various topics for extended periods',
+        completed: false
+      }
+    ],
     tips: [
       'Attend language exchange events or conversation meetups',
       'Challenge yourself to speak only in Spanish for an entire day',
@@ -127,15 +200,30 @@ const WEEKS = [
     objectives: ['Practice having longer conversations in Spanish', 'Improve overall language fluency'],
   },
   {
-    activities: ['Review vocabulary, grammar rules, and common phrases', 'Work on areas where you feel less confident'],
+    activities: [
+      {
+        activity: 'Review vocabulary, grammar rules, and common phrases',
+        completed: false
+      },
+      {
+        activity: 'Work on areas where you feel less confident',
+        completed: false
+      }
+    ],
     tips: ['Take practice quizzes to assess your progress', 'Seek feedback from a language tutor or teacher'],
     weekNumber: 11,
     objectives: ['Review and consolidate previous learning', 'Focus on areas needing improvement'],
   },
   {
     activities: [
-      'Practice role-playing conversations with a focus on common scenarios',
-      'Engage in language exchange sessions with native speakers',
+      {
+        activity: 'Practice role-playing conversations with a focus on common scenarios',
+        completed: false
+      },
+      {
+        activity: 'Engage in language exchange sessions with native speakers',
+        completed: false
+      }
     ],
     tips: [
       'Set specific conversation goals for each practice session',
@@ -243,16 +331,16 @@ test('for every week: renders Objectives, Activities (as checkboxes), and Tips w
       expect(within(details).queryByText('Objectives')).toBeNull()
     }
 
-    // Activities (checkbox list)
+    // Activities (checkbox list) - UPDATED for new structure
     if (Array.isArray(week.activities) && week.activities.length > 0) {
       const heading = within(details).getByText('Activities')
       // All checkboxes under this section
       const section = heading.parentElement
       const checkboxes = within(section).getAllByRole('checkbox')
       expect(checkboxes).toHaveLength(week.activities.length)
-      // Each activity label text appears
-      week.activities.forEach((text) => {
-        expect(within(section).getByText(text)).toBeInTheDocument()
+      // Each activity label text appears - CHECK THE .activity PROPERTY
+      week.activities.forEach((activityObj) => {
+        expect(within(section).getByText(activityObj.activity)).toBeInTheDocument()
       })
     } else {
       expect(within(details).queryByText('Activities')).toBeNull()
@@ -265,7 +353,7 @@ test('for every week: renders Objectives, Activities (as checkboxes), and Tips w
       const items = within(list).getAllByRole('listitem')
       expect(items).toHaveLength(week.tips.length)
       week.tips.forEach((text) => {
-        expect(within(list).getByText(text)).toBeInTheDocument()
+      expect(within(list).getByText(text)).toBeInTheDocument()
       })
     } else {
       expect(within(details).queryByText('Tips')).toBeNull()
