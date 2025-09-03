@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ClerkProvider>
-      <div data-theme="nord">
+      <div data-theme="synthwave">
         {!isAuthPage && shouldShowNavbar && <Navbar />}
         <Component {...pageProps} />
       </div>
