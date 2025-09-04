@@ -33,7 +33,7 @@ export default function Navbar() {
       {/* Right: Sign out */}
       <div className="navbar-end">
         <SignOutButton>
-          <button className="btn btn-base btn-sm">Sign Out</button>
+          <button className="btn btn-base btn-sm">sign out</button>
         </SignOutButton>
       </div>
     </div>
