@@ -30,7 +30,7 @@ jest.mock("@clerk/nextjs/server", () => ({
 }));
 
 import Home from "../../pages/[[...index]]";
-const AimePlannerForm = require("../../pages/form").default;
+// const AimePlannerForm = require("../../pages/form").default;
 // import NormalizePlan from "../../pages/[[...index]]"
 
 
