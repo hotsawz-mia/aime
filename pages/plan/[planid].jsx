@@ -191,12 +191,6 @@ const Plan = () => {
             </details>
           ))}
         </section>
-
-        <div className="flex justify-end">
-          <SignOutButton>
-            <button className="btn btn-error">Sign Out</button>
-          </SignOutButton>
-        </div>
       </main>
     </div>
   );
@@ -204,4 +198,3 @@ const Plan = () => {
 
 export default Plan;
 
-// one comment for the puposes of github
