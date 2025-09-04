@@ -78,19 +78,9 @@ export default function AimePlannerForm() {
 
   return (
 
-//     <div data-theme="synthwave" className="min-h-screen bg-base-200">
-//       <main className="mx-auto w-full max-w-3xl p-6 md:p-10 space-y-6">
-//         {/* Header card */}
-//         <div className="card bg-base-100/80 backdrop-blur shadow-xl">
-//           <div className="card-body">
-//             <h1 className="card-title text-3xl text-secondary">Plan your goal</h1>
-//             <p className="opacity-80">
-//               Fill in a few details and we’ll generate a step-by-step plan.
-//             </p>
-
     <div className="min-h-screen bg-base-200">
       <main className="mx-auto w-full max-w-2xl p-6 md:p-10">
-      <h1 className="font-bebas pinkNeon-border pinkNeon-outline text-8xl mt-4 mb-8">AI.ME</h1>
+        {/* <h1 className="font-bebas pinkNeon-border pinkNeon-outline text-8xl mt-4 mb-8">AI-ME</h1> */}
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* What’s your Aime? */}
           <div className="form-control">
@@ -102,8 +92,8 @@ export default function AimePlannerForm() {
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Aime */}
               <div className="form-control">
-                <label htmlFor="aime" className="label">
-                  <span className="label-text text-2xl text-secondary">What’s your Aime?</span>
+                <label htmlFor="aime" className="label flex-col items-start gap-1 mt-4">
+                <span className="label-text text-2xl text-secondary block whitespace-normal break-words [overflow-wrap:anywhere] mb-2">What’s your Aime?</span>
                 </label>
                 <input
                   id="aime"
@@ -122,8 +112,8 @@ export default function AimePlannerForm() {
 
               {/* Success */}
               <div className="form-control">
-                <label htmlFor="success" className="label">
-                  <span className="label-text text-2xl text-secondary">What does success look like for you?</span>
+                <label htmlFor="success" className="label flex-col items-start gap-1 mt-8">
+                  <span className="label-text text-2xl text-secondary block whitespace-normal break-words [overflow-wrap:anywhere] mb-2">What does success look like for you?</span>
                 </label>
                 <textarea
                   id="success"
@@ -141,8 +131,8 @@ export default function AimePlannerForm() {
 
               {/* Starting Level */}
               <div className="form-control">
-                <label htmlFor="startLevel" className="label">
-                  <span className="label-text text-2xl text-secondary">What level are you currently?</span>
+                <label htmlFor="startLevel" className="label flex-col items-start gap-1 mt-8">
+                  <span className="label-text text-2xl text-secondary block whitespace-normal break-words [overflow-wrap:anywhere] mb-2">What level are you currently?</span>
                 </label>
                 <input
                   id="startLevel"
@@ -161,8 +151,8 @@ export default function AimePlannerForm() {
 
               {/* Target Date (text + calendar) */}
               <div className="form-control">
-                <label htmlFor="targetDate" className="label">
-                  <span className="label-text text-2xl">
+                <label htmlFor="targetDate" className="label flex-col items-start gap-1 mt-8">
+                  <span className="label-text text-2xl text-secondary block whitespace-normal break-words [overflow-wrap:anywhere] mb-2">
                     When do you want to have achieved this goal by?
                   </span>
                 </label>
@@ -212,8 +202,8 @@ export default function AimePlannerForm() {
 
               {/* Time Per Day */}
               <div className="form-control">
-                <label htmlFor="timePerDay" className="label">
-                  <span className="label-text text-2xl text-secondary">
+                <label htmlFor="timePerDay" className="label flex-col items-start gap-1 mt-8">
+                  <span className="label-text text-2xl text-secondary block whitespace-normal break-words [overflow-wrap:anywhere] mb-2">
                     How much time per day can you realistically commit?
                   </span>
                 </label>
@@ -239,12 +229,20 @@ export default function AimePlannerForm() {
               </div>
 
               <div className="flex justify-end pt-2">
-                <button
+                {/* <button
                   type="submit"
                   className="btn btn-primary btn-lg rounded-full px-8 shadow-md hover:shadow-lg transition hover:-translate-y-0.5"
                   disabled={submitting}
                 >
                   {submitting ? "Saving…" : "Plan my goal"}
+                </button> */}
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-lg rounded-full px-8 shadow-md hover:shadow-lg transition hover:-translate-y-0.5 flex items-center gap-2"
+                  disabled={submitting}
+                >
+                  {submitting && <span className="loading loading-spinner"></span>}
+                  {submitting ? "Thinking..." : "Plan my goal"}
                 </button>
               </div>
             </form>
