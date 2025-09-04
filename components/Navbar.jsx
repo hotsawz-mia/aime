@@ -41,7 +41,7 @@ export default function Navbar() {
       <div className="navbar-end">
         <SignOutButton>
 
-          <button className="btn btn-base btn-sm text-success">Sign Out</button>
+          <button className="btn btn-base btn-sm text-success">sign out</button>
 
         </SignOutButton>
       </div>
