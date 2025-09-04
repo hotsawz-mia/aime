@@ -87,11 +87,7 @@ export default function Home() {
                         {p.plan.learning_plan.aim || "Untitled plan"}
                       </Link>
                       <div className="flex items-center gap-2 shrink-0">
-                        {p.plan.learning_plan.targetDate && (
-                          <span className="badge badge-secondary">
-                            {new Date(p.plan.learning_plan.targetDate).toLocaleDateString()}
-                          </span>
-                        )}
+                        {p.plan.learning_plan.targetDate}
                         {/* <-- makes Open a link */}
                         <Link href={`/plan/${p._id}`} className="btn btn-sm btn-outline">
                           open

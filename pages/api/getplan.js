@@ -56,21 +56,38 @@ export default async function handler(req, res) {
           {
             role: "user",
             content: `
-Here is my information:
-- Aim: ${aim}
-- Success looks like: ${success}
-- Starting level: ${startingLevel}
-- Target date: ${targetDate}
-- Total weeks ${numberOfWeeksForPlan}
-- Time available per day: ${timePerDay} minutes
-
-Please generate a personalized learning plan in JSON format. 
-Structure it by weeks and for each week include:
-- objectives
-- activities
-- tips
-Make sure the JSON is valid and parseable. There should be ${numberOfWeeksForPlan} weeks in total
-`,
+            Here is my information:
+            - Aim: ${aim}
+            - Success looks like: ${success}
+            - Starting level: ${startingLevel}
+            - Target date: ${targetDate}
+            - Total weeks ${numberOfWeeksForPlan}
+            - Time available per day: ${timePerDay} minutes
+            Please generate a personalized learning plan in JSON format.
+            Structure it by weeks and for each week include:
+            - objectives
+            - activities
+            - tips
+            Make sure the JSON is valid and parseable. There should be ${numberOfWeeksForPlan} weeks in total
+            Important: the array of weeks objects should have a key of weeks and each weekNumber key should be camelCase. Example:
+            "learning_plan": {
+                "weeks": [
+                  {
+                    "week": 1,
+                    "objectives": [
+                      "Understand basics of Angular framework",
+                      "Set up Angular development environment"
+                    ],
+                    "activities": [
+                      "Read Angular documentation",
+                      "Watch tutorial videos on setting up Angular"
+                    ],
+                    "tips": [
+                      "Take notes while reading and watching tutorials",
+                      "Practice setting up Angular environment multiple times"
+                    ]
+                  },
+            `,
           },
         ],
       });
