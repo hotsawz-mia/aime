@@ -57,7 +57,7 @@ export default function Home() {
         <div className="hero-content text-center py-12">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
-              Welcome to <span className="text-success">Ai-Me</span>
+              Welcome to <span className="text-success">AI-ME</span>
             </h1>
             <p className="mt-3 opacity-80">
               Your AI-assisted aims, all in one place.

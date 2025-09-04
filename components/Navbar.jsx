@@ -26,7 +26,7 @@ export default function Navbar() {
       {/* Center: AiMe (absolute so it stays visually centered regardless of left/right width) */}
       <div className="navbar-center absolute left-1/2 -translate-x-1/2">
         <span className="inline-block rounded-lg text-base-100 px-3 py-1 text-xl font-bold select-none">
-          AiMe
+          AI-ME
         </span>
       </div>
 
