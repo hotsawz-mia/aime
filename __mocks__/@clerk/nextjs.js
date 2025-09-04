@@ -1,9 +1,10 @@
 import React from "react";
+
 export const ClerkProvider = ({ children }) => <>{children}</>;
 
 export const useUser = jest.fn(() => ({
-  isSignedIn: true,
-  user: { id: 'user_123', email: 'test@example.com' },
+  isSignedIn: false,  // Default to signed out
+  user: null,
 }));
 
 export const useClerk = jest.fn(() => ({
@@ -12,17 +13,41 @@ export const useClerk = jest.fn(() => ({
 
 export const withAuth = (Component) => Component;
 
-export const SignedIn = ({ children }) => <>{children}</>;
-export const SignedOut = ({ children }) => <>{children}</>;
-export const SignInButton = ({ children }) => <button>{children || "Sign In"}</button>;
-export const SignOutButton = ({ children }) => (
-  <button onClick={() => {
-    const router = require("next/router").useRouter();
-    router.push("/");
-  }}>
-    {children || "Sign Out"}
-  </button>
-);
-export const SignUp = ({ children }) => <button>{children || "Sign Up"}</button>;
+// FIX: Make these actually conditional based on useUser
+export const SignedIn = ({ children }) => {
+  const { isSignedIn } = useUser();
+  return isSignedIn ? <>{children}</> : null;
+};
 
+export const SignedOut = ({ children }) => {
+  const { isSignedIn } = useUser();
+  return !isSignedIn ? <>{children}</> : null;
+};
 
+export const SignInButton = ({ children }) => {
+  return React.cloneElement(children, { 
+    'data-testid': 'sign-in-button'
+  });
+};
+
+export const SignOutButton = ({ children }) => {
+  const handleClick = () => {
+    try {
+      const router = require("next/router").useRouter();
+      router.push("/");
+    } catch (err) {
+      console.log("Sign out clicked");
+    }
+  };
+  
+  return React.cloneElement(children, { 
+    onClick: handleClick,
+    'data-testid': 'sign-out-button'
+  });
+};
+
+export const SignUp = ({ children }) => {
+  return React.cloneElement(children, { 
+    'data-testid': 'sign-up-button'
+  });
+};

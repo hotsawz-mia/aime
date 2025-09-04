@@ -94,26 +94,8 @@ export default function AimePlannerForm() {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* What’s your Aime? */}
           <div className="form-control">
-            <label htmlFor="aime" className="label">
-              <span className="label-text text-2xl">What’s your Aime?</span>
-            </label>
-            <input
-              id="aime"
-              type="text"
-              className="input input-bordered w-full text-2xl"
-              placeholder="Sing in a Rock Band"
-              value={aime}
-              onChange={(e) => {
-                setAime(e.target.value);
-                if (errors.aime) setErrors((p) => ({ ...p, aime: undefined }));
-              }}
-              autoComplete="off"
-            />
-            {errors.aime && <p className="text-error text-sm mt-1">{errors.aime}</p>}
-
           </div>
-        </div>
-
+          </form>
         {/* Form card */}
         <div className="card bg-base-100/80 backdrop-blur shadow-xl">
           <div className="card-body">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
+import { SignOutButton } from "@clerk/nextjs";
 
 
 const Plan = () => {
@@ -123,97 +123,53 @@ const Plan = () => {
         </div>
 
         {/* Weeks accordion — highlight whichever is open */}
-        <progress className="progress progress-success w-95" value={percentageCompleted} max="100"></progress>
+        <progress className="progress progress-success w-full" value={percentageCompleted} max="100"></progress>
         <section className="space-y-3">
           {learning_plan.weeks.map((week) => (
             <details
               key={week.weekNumber}
                 className="collapse collapse-arrow bg-base-100/70 backdrop-blur shadow transition-all duration-200
-                          open:bg-neutral/10 open:ring-2 open:ring-neutral"
++                          open:bg-neutral/10 open:ring-2 open:ring-neutral"
               open={week.weekNumber === 1} // Week 1 shown by default
             >
               <summary
                 className="collapse-title text-xl font-bold select-none
-                          text-secondary open:text-neutral"
++                          text-secondary open:text-neutral"
               >
                 <span className="opacity-85">Week</span>{" "}
                 <span className="font-extrabold">{week.weekNumber}</span>
               </summary>
 
 
-
-           
-
-              <div className="collapse-content space-y-4 w-full max-w-full">
-
-
+              <div className="collapse-content space-y-4">
                 {/* Objectives */}
                 {Array.isArray(week.objectives) && week.objectives.length > 0 && (
-                  <div className="w-full">
+                  <div>
                     <p className="text-lg font-semibold text-accent">Objectives</p>
-                    <ul className="list-disc list-outside ps-5 md:ps-6 marker:text-base space-y-1 overflow-visible">
+                    <ul className="list-disc list-inside marker:text-base">
                       {week.objectives.map((obj, idx) => (
-                        <li 
-                          key={idx}
-                          className="whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto"
-                        >
-                          {obj}
-                        </li>
+                        <li key={idx}>{obj}</li>
                       ))}
                     </ul>
                   </div>
                 )}
                 {/* Activities as checkbox list */}
-
                 {Array.isArray(week.activities) && week.activities.length > 0 && (
                   <div>
-                    <p className="text-lg font-semibold text-success">Activities</p>
-                    <div className="form-control gap-2 flex flex-col">
-                      {week.activities.map((act, idx) => (
-                        <label
-                          key={idx}
-                          className="label cursor-pointer justify-start gap-3 p-0 flex items-centre justify-between py1"
-                        >
-                          <span className="label-text flex-grow ml-4">{act}</span>
-                          <input type="checkbox" className="checkbox checkbox-success checkbox-lg" />
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                )} */}
-                {/* Activities as checkbox list */}
-                {Array.isArray(week.activities) && week.activities.length > 0 && (
-                  <div className="w-full">
                     <p className="text-lg font-semibold text-success">Activities</p>
                     <div className="form-control gap-2">
                       {week.activities.map((act, idx) => (
                         <label
                           key={idx}
-                          className="label cursor-pointer justify-start items-start gap-3 p-0 w-full flex-wrap min-w-0"
+                          className="label cursor-pointer justify-start gap-3 p-0"
                         >
-
-
-//                           <input
-//                             type="checkbox"
-//                             className="checkbox checkbox-success"
-//                             checked={!!act.completed}
-//                             onChange={(e) => toggleActivity(week.weekNumber, idx, e.target.checked)}
-//                           />
-//                           <span className="label-text" >{act.activity}</span>
-
-                          <input 
-                            type="checkbox" 
-                            className="checkbox checkbox-success mt-1"
-                            defaultChecked={!!act.completed}
-                            value={act.activity}
-                            aria-label={act.activity}
+                          <input
+                            type="checkbox"
+                            className="checkbox checkbox-success"
+                            checked={!!act.completed}
+                            onChange={(e) => toggleActivity(week.weekNumber, idx, e.target.checked)}
                           />
-                          <span className="label-text flex-1 min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto">
-                            {act.activity}
-                          </span>
-
-
-
+                          <span className="label-text" >{act.activity}</span>
                         </label>
                       ))}
                     </div>
@@ -222,16 +178,11 @@ const Plan = () => {
 
                 {/* Tips */}
                 {Array.isArray(week.tips) && week.tips.length > 0 && (
-                  <div className="w-full">
+                  <div>
                     <p className="text-lg font-semibold text-primary">Tips</p>
-                    <ul className="list-disc list-outside ps-5 md:ps-6 marker:text-primary space-y-1 overflow-visible">
+                    <ul className="list-disc list-inside marker:text-primary">
                       {week.tips.map((tip, idx) => (
-                        <li 
-                          key={idx}
-                          className="whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto"
-                        >
-                          {tip}
-                        </li>
+                        <li key={idx}>{tip}</li>
                       ))}
                     </ul>
                   </div>
@@ -240,6 +191,12 @@ const Plan = () => {
             </details>
           ))}
         </section>
+
+        <div className="flex justify-end">
+          <SignOutButton>
+            <button className="btn btn-error">Sign Out</button>
+          </SignOutButton>
+        </div>
       </main>
     </div>
   );

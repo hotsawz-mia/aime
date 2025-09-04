@@ -1,9 +1,10 @@
 import React from "react";
-import { SignedIn, SignedOut, SignInButton, SignOutButton, SignUp } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, useUser, SignOutButton, SignUp } from "@clerk/nextjs";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 //
-import { getAuth } from "@clerk/nextjs/server";
-import clientPromise from "/lib/mongodb";
+// import { getAuth } from "@clerk/nextjs/server";
+// import clientPromise from "/lib/mongodb";
 //
 
 // export default function Home() {
@@ -21,7 +22,34 @@ import clientPromise from "/lib/mongodb";
 //   )
 // }
 
-export default function Home({ plans = [] }) {
+export default function Home() {
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user, isSignedIn } = useUser();
+  useEffect(() => {
+    if (isSignedIn && user) {
+      fetchPlans();
+    } else {
+      setLoading(false);
+    }
+  }, [isSignedIn, user]);
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch('/api/getallplans');
+      if (response.ok) {
+        const data = await response.json();
+        setPlans(data.plans || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch plans:', error);
+      setPlans([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  console.log(plans);
   return (
     <div data-theme="synthwave" className="min-h-screen bg-base-200">
       {/* Hero / Welcome */}
@@ -53,19 +81,19 @@ export default function Home({ plans = [] }) {
             {plans.length > 0 && (
               <ul className="menu bg-base-100 rounded-box shadow w-full">
                 {plans.map((p) => (
-                  <li key={p.id}>
+                  <li key={p._id}>
                     <div className="flex items-center justify-between gap-3">
-                      <Link href={`/plan/${p.id}`} className="flex-1 min-w-0 truncate">
-                        {p.aim || "Untitled plan"}
+                      <Link href={`/plan/${p._id}`} className="flex-1 min-w-0 truncate">
+                        {p.plan.learning_plan.aim || "Untitled plan"}
                       </Link>
                       <div className="flex items-center gap-2 shrink-0">
-                        {p.targetDate && (
+                        {p.plan.learning_plan.targetDate && (
                           <span className="badge badge-secondary">
-                            {new Date(p.targetDate).toLocaleDateString()}
+                            {new Date(p.plan.learning_plan.targetDate).toLocaleDateString()}
                           </span>
                         )}
                         {/* <-- makes Open a link */}
-                        <Link href={`/plan/${p.id}`} className="btn btn-sm btn-outline">
+                        <Link href={`/plan/${p._id}`} className="btn btn-sm btn-outline">
                           Open
                         </Link>
                       </div>
@@ -108,42 +136,42 @@ export default function Home({ plans = [] }) {
 }
 
 // ---- Server-side: fetch the user's plans by userId ----
-export async function getServerSideProps(ctx) {
-  const { userId } = getAuth(ctx.req) || {};
+// export async function getServerSideProps(ctx) {
+//   const { userId } = getAuth(ctx.req) || {};
 
-  // If not signed in, let <SignedOut> handle UI
-  if (!userId) {
-    return { props: { plans: [] } };
-  }
+//   // If not signed in, let <SignedOut> handle UI
+//   if (!userId) {
+//     return { props: { plans: [] } };
+//   }
 
-  const client = await clientPromise;
-  const db = client.db("aime");                 // matches API route
-  const collection = db.collection("plans");    // matches API route
+//   const client = await clientPromise;
+//   const db = client.db("aime");                 // matches API route
+//   const collection = db.collection("plans");    // matches API route
 
-  // Supports userId or user_id fields
-  const raw = await collection
-    .find({ $or: [{ userId }, { user_id: userId }] })
-    .project({ plan: 1, createdAt: 1 })
-    .sort({ createdAt: -1 })
-    .toArray();
+//   // Supports userId or user_id fields
+//   const raw = await collection
+//     .find({ $or: [{ userId }, { user_id: userId }] })
+//     .project({ plan: 1, createdAt: 1 })
+//     .sort({ createdAt: -1 })
+//     .toArray();
 
-  const plans = raw.map((doc) => {
-    const planObj =
-      typeof doc.plan === "string" ? safeParse(doc.plan) : (doc.plan || {});
-    const lp = planObj?.learning_plan || planObj?.learningPlan || planObj || {};
-    return {
-      id: doc._id?.toString(),                   // uses ObjectId string for links
-      aim: lp.aim || "Untitled plan",
-      targetDate: lp.targetDate || null,
-      createdAt: doc.createdAt
-        ? new Date(doc.createdAt).toISOString()
-        : null,
-    };
-  });
+//   const plans = raw.map((doc) => {
+//     const planObj =
+//       typeof doc.plan === "string" ? safeParse(doc.plan) : (doc.plan || {});
+//     const lp = planObj?.learning_plan || planObj?.learningPlan || planObj || {};
+//     return {
+//       id: doc._id?.toString(),                   // uses ObjectId string for links
+//       aim: lp.aim || "Untitled plan",
+//       targetDate: lp.targetDate || null,
+//       createdAt: doc.createdAt
+//         ? new Date(doc.createdAt).toISOString()
+//         : null,
+//     };
+//   });
 
-  return { props: { plans } };
-}
+//   return { props: { plans } };
+// }
 
-function safeParse(s) {
-  try { return JSON.parse(s); } catch { return null; }
-}
+// function safeParse(s) {
+//   try { return JSON.parse(s); } catch { return null; }
+// }

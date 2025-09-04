@@ -1,6 +1,10 @@
 /** @jest-environment jsdom */
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+
+// Mock CSS import first, before importing the form component
+jest.mock("react-day-picker/style.css", () => ({}));
+
 import AimePlannerForm from "../pages/form";
 
 // Mock Next router (capture push so we can assert on it)
