@@ -6,6 +6,9 @@ jest.mock("next/router", () => ({
   useRouter: () => ({ push: jest.fn() }),
 }));
 
+// Mock the CSS import to prevent Jest parsing errors
+jest.mock("react-day-picker/style.css", () => ({}));
+
 function Hello() {
   return <h1>hello</h1>;
 }
