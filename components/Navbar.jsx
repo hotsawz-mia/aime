@@ -30,7 +30,9 @@ export default function Navbar() {
 
       {/* Center: AiMe (absolute so it stays visually centered regardless of left/right width) */}
       <div className="navbar-center absolute left-1/2 -translate-x-1/2">
+
         <span className="inline-block rounded-lg px-3 py-1 text-xl font-bold select-none text-success">
+
           AI-ME
         </span>
       </div>
@@ -38,7 +40,9 @@ export default function Navbar() {
       {/* Right: Sign out */}
       <div className="navbar-end">
         <SignOutButton>
+
           <button className="btn btn-base btn-sm text-success">Sign Out</button>
+
         </SignOutButton>
       </div>
     </div>

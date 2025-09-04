@@ -141,14 +141,19 @@ const Plan = () => {
               </summary>
 
 
-              <div className="collapse-content space-y-4">
+              <div className="collapse-content space-y-4 w-full max-w-full">
                 {/* Objectives */}
                 {Array.isArray(week.objectives) && week.objectives.length > 0 && (
                   <div>
                     <p className="text-lg font-semibold text-accent">Objectives</p>
-                    <ul className="list-disc list-inside marker:text-base">
+                    <ul className="list-disc list-outside ps-5 md:ps-6 marker:text-base space-y-1 overflow-visible">
                       {week.objectives.map((obj, idx) => (
-                        <li key={idx}>{obj}</li>
+                        <li 
+                          key={idx}
+                          className="whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto"
+                        >
+                          {obj}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -157,19 +162,21 @@ const Plan = () => {
                 {Array.isArray(week.activities) && week.activities.length > 0 && (
                   <div>
                     <p className="text-lg font-semibold text-success">Activities</p>
-                    <div className="form-control gap-2">
+                    <div className="form-control gap-2 flex flex-col">
                       {week.activities.map((act, idx) => (
                         <label
                           key={idx}
-                          className="label cursor-pointer justify-start gap-3 p-0"
+                          className="label cursor-pointer justify-start items-start gap-3 p-0 w-full min-w-0"
                         >
                           <input
                             type="checkbox"
-                            className="checkbox checkbox-success"
+                            className="checkbox checkbox-success mt-1 shrink-0"
                             checked={!!act.completed}
                             onChange={(e) => toggleActivity(week.weekNumber, idx, e.target.checked)}
                           />
-                          <span className="label-text" >{act.activity}</span>
+                          <span className="label-text flex-1 min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto !text-base-content !opacity-100">
+                            {act.activity}
+                          </span>
                         </label>
                       ))}
                     </div>
@@ -180,9 +187,14 @@ const Plan = () => {
                 {Array.isArray(week.tips) && week.tips.length > 0 && (
                   <div>
                     <p className="text-lg font-semibold text-primary">Tips</p>
-                    <ul className="list-disc list-inside marker:text-primary">
+                    <ul className="list-disc list-outside ps-5 md:ps-6 marker:text-primary space-y-1 overflow-visible">
                       {week.tips.map((tip, idx) => (
-                        <li key={idx}>{tip}</li>
+                        <li 
+                          key={idx}
+                          className="whitespace-normal break-words [overflow-wrap:anywhere] hyphens-auto"
+                        >
+                          {tip}
+                        </li>
                       ))}
                     </ul>
                   </div>
