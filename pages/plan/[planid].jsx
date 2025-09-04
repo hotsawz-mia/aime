@@ -97,7 +97,7 @@ const Plan = () => {
         {/* Header card */}
         <div className="card bg-base-100/80 backdrop-blur shadow-xl">
           <div className="card-body">
-            <h1 className="card-title text-secondary font-bebas peachNeon text-5xl mt-4 mb-8 uppercase">
+            <h1 className="card-title text-secondary font-bebas successNeon text-5xl mt-4 mb-8 uppercase">
               {learning_plan.aim}
             </h1>
 

@@ -8,6 +8,21 @@
 .font-bebas { font-family: var(--font-bebas), ui-sans-serif, system-ui; }
 
 /* Filled pink neon */
+.successNeon {
+  font-family: var(--font-bebas), ui-sans-serif, system-ui;
+  letter-spacing: 0.06em;
+  color: #00D2BC; /* pink base */
+  text-shadow:
+    0 0 3px #fff,
+    0 0 4px #00FFE4,
+    0 0 8px #00FFE4,
+    0 0 16px #00FFE4,
+    0 0 32px #00FFE4,
+    0 0 48px #00FFE4;
+}
+
+
+/* Filled pink neon */
 .pinkNeon {
   font-family: var(--font-bebas), ui-sans-serif, system-ui;
   letter-spacing: 0.06em;
