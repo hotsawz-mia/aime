@@ -242,7 +242,7 @@ export default function AimePlannerForm() {
                   disabled={submitting}
                 >
                   {submitting && <span className="loading loading-spinner"></span>}
-                  {submitting ? "Thinking..." : "Plan my goal"}
+                  {submitting ? "thinking..." : "plan my goal"}
                 </button>
               </div>
             </form>

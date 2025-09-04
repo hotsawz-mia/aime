@@ -75,7 +75,7 @@ export default function Home() {
                 <p className="text-sm opacity-80">No plans yet.</p>
               </div>
             ) : (
-              <h2 className="text-xl font-semibold mb-3">Your plans</h2>
+              <h2 className="text-xl font-semibold mb-3">Your Plans</h2>
             )}
 
             {plans.length > 0 && (
@@ -94,7 +94,7 @@ export default function Home() {
                         )}
                         {/* <-- makes Open a link */}
                         <Link href={`/plan/${p._id}`} className="btn btn-sm btn-outline">
-                          Open
+                          open
                         </Link>
                       </div>
                     </div>
@@ -107,7 +107,7 @@ export default function Home() {
           {/* Make a plan link */}
           <div className="flex justify-center">
             <Link href="/form" className="btn btn-primary">
-              Make a plan
+              make a plan
             </Link>
           </div>
         </SignedIn>
@@ -121,10 +121,10 @@ export default function Home() {
               </p>
               <div className="card-actions mt-4">
                 <SignInButton>
-                  <button className="btn btn-primary">Sign in</button>
+                  <button className="btn btn-primary">sign in</button>
                 </SignInButton>
                 <Link href="/register" className="btn btn-secondary">
-                  Sign up
+                  sign up
                 </Link>
               </div>
             </div>
